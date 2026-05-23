@@ -1,4 +1,4 @@
-Fix mobile responsiveness across the entire RoboFest 2025 website. Apply these fixes to all 17 pages. Target breakpoints: Mobile 390px, Tablet 768px, Desktop 1200px+.
+Fix mobile responsiveness across the entire ARC 3.0 2025 website. Apply these fixes to all 17 pages. Target breakpoints: Mobile 390px, Tablet 768px, Desktop 1200px+.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 GLOBAL RULES (all pages)

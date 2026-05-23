@@ -1,4 +1,4 @@
-ROBOFEST 2025 — FULL WEBSITE — ALL PAGES
+ARC 3.0 2025 — FULL WEBSITE — ALL PAGES
 
 INSTRUCTION TO FIGMA AI:
 Create 17 separate full-page frames for a complete website. Each frame should be 1440px wide (desktop) and auto height. Name each frame exactly as listed. All pages share the same design system. Do NOT skip any page.
@@ -37,7 +37,7 @@ Same green glow treatment
 GLOBAL NAVBAR — COMPONENT (used in all pages)
 Height 64px · Sticky · rgba(5,5,8,0.85) + backdrop blur
 
-Left: Robot circuit icon + ROBOFEST bold uppercase wordmark
+Left: Robot circuit icon + ARC 3.0 bold uppercase wordmark
 Center: 7 individual pill nav buttons with hover/active green state:
 Home · Segments · Schedule · Sponsors · Past Events · About · FAQ
 Right:
@@ -51,7 +51,7 @@ Register Now green pill button with →
 
 GLOBAL FOOTER — COMPONENT (used in all pages)
 4 columns: Logo + tagline · Quick Links · Contact Info · Social Icons
-Bottom strip: © 2025 RoboFest · Robotics Club
+Bottom strip: © 2025 ARC 3.0 · Robotics Club
 BG: #0A0D14
 
 
@@ -88,7 +88,7 @@ Dark BG · Center: massive glowing ৳1,00,000+ in green · 3 tier cards: 🥇 C
 ⑧ Sponsors Strip:
 TRUSTED & SUPPORTED BY label · 2 rows of white/desaturated logos · tier labels: Title / Co-Sponsors / Partners · logos colorize on hover
 ⑨ Past Highlights Gallery:
-Headline: "Relive RoboFest 2024" · Asymmetric masonry grid of 5 photos · 1 video thumbnail cell with play button glow · View Full Gallery →
+Headline: "Relive ARC 3.0 2024" · Asymmetric masonry grid of 5 photos · 1 video thumbnail cell with play button glow · View Full Gallery →
 ⑩ Testimonials:
 Left: "What Participants Say." · Right: 3 stacked dark glass quote cards — avatar circle + name + university + quote
 ⑪ CTA Banner:
@@ -124,7 +124,7 @@ FRAME 4 — Sponsors & Partners Page
 Public page.
 
 Navbar
-Short Hero: "The People Behind RoboFest."
+Short Hero: "The People Behind ARC 3.0."
 Title Sponsor Section: 1 large featured card · logo · company name · description · website link
 Co-Sponsors Row: medium dark glass cards
 Partners Row: smaller logo cards
@@ -201,7 +201,7 @@ FRAME 9 — Login Page
 
 Navbar (minimal, no center nav links)
 Full viewport · same dark glow BG · centered card 480px
-Logo + ROBOFEST at top of card
+Logo + ARC 3.0 at top of card
 "Welcome Back." headline
 Email field + Password field (show/hide toggle)
 Forgot Password? right-aligned link
@@ -302,7 +302,7 @@ Same card as login · ADMIN ACCESS badge with red/orange tint · username + pass
 Admin Layout — wide left sidebar (260px) + main:
 Left Sidebar:
 
-ROBOFEST ADMIN logo + admin avatar
+ARC 3.0 ADMIN logo + admin avatar
 Nav: 📊 Dashboard · 👥 Participants · 🤖 Segments · 📢 Announcements · 🏆 Leaderboard · 💳 Payments · 📜 Certificates · 🌐 Website Content · 📅 Schedule · 🎫 QR & Attendance · 💬 Support Chat · ⚙️ Settings
 
 Main — Dashboard Overview:

@@ -112,7 +112,7 @@ export const Highlights = () => {
               className="font-bold text-[#d4e8c2]"
               style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 'clamp(28px, 5vw, 58px)' }}
             >
-              Relive RoboFest 2024
+              Relive ARC 3.0 2024
             </h2>
           </div>
           <a

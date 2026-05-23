@@ -45,11 +45,10 @@ export const AdminLayout = () => {
 
   return (
     <div
-      className={`min-h-screen flex antialiased transition-colors duration-300 ${
-        isDark
+      className={`min-h-screen flex antialiased transition-colors duration-300 ${isDark
           ? 'bg-[#0A0A0F] text-[#F5F5F0] selection:bg-[#588157] selection:text-[#F5F5F0]'
           : 'bg-[#dad7cd] text-[#1a1a14] selection:bg-[#3a5a40] selection:text-white'
-      }`}
+        }`}
       style={{ fontFamily: "'Inter', sans-serif" }}
     >
       {/* Top Navbar - Only visible on mobile/tablet */}
@@ -68,15 +67,14 @@ export const AdminLayout = () => {
       </div>
 
       {/* Sidebar - Full width on lg+ */}
-      <aside className={`hidden lg:flex flex-col w-64 border-r fixed top-0 h-screen z-30 backdrop-blur-xl ${
-        isDark ? 'border-white/[0.06] bg-[#0d0d12]/95' : 'border-black/[0.06] bg-white/95'
-      }`}>
+      <aside className={`hidden lg:flex flex-col w-64 border-r fixed top-0 h-screen z-30 backdrop-blur-xl ${isDark ? 'border-white/[0.06] bg-[#0d0d12]/95' : 'border-black/[0.06] bg-white/95'
+        }`}>
         <div className="p-6">
           <h1 className="font-bold text-xl tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-            RoboFest<span className="text-[#588157]"> Admin</span>
+            ARC 3.0<span className="text-[#588157]"> Admin</span>
           </h1>
         </div>
-        
+
         <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
           {navItems.map((item) => (
             <NavLink
@@ -85,7 +83,7 @@ export const AdminLayout = () => {
               end={item.end}
               className={({ isActive }) => `
                 flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium
-                ${isActive 
+                ${isActive
                   ? isDark
                     ? 'bg-[rgba(88,129,87,0.15)] text-[#a3b18a] border-l-[3px] border-[#3a5a40] pl-[13px]'
                     : 'bg-[rgba(58,90,64,0.10)] text-[#344e41] border-l-[3px] border-[#3a5a40] pl-[13px]'
@@ -107,11 +105,10 @@ export const AdminLayout = () => {
             {/* Home Button */}
             <Link
               to="/"
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
-                isDark
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${isDark
                   ? 'text-[#9A9A8E] hover:bg-white/5 hover:text-[#a3b18a]'
                   : 'text-[#8a8a7a] hover:bg-black/5 hover:text-[#3a5a40]'
-              }`}
+                }`}
             >
               <Home className="w-5 h-5" />
               <span className="font-medium">Home</span>
@@ -120,11 +117,10 @@ export const AdminLayout = () => {
             {/* Theme Toggle */}
             <button
               onClick={() => setTheme(isDark ? 'light' : 'dark')}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 w-full ${
-                isDark
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 w-full ${isDark
                   ? 'text-[#9A9A8E] hover:bg-white/5 hover:text-[#a3b18a]'
                   : 'text-[#8a8a7a] hover:bg-black/5 hover:text-[#3a5a40]'
-              }`}
+                }`}
             >
               {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               <span className="font-medium">Theme</span>
@@ -133,11 +129,10 @@ export const AdminLayout = () => {
             {/* Exit Admin Button */}
             <button
               onClick={() => signOut({ callbackUrl: '/' })}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 w-full ${
-                isDark
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 w-full ${isDark
                   ? 'text-[#9A9A8E] hover:bg-red-500/10 hover:text-red-400'
                   : 'text-[#8a8a7a] hover:bg-red-500/10 hover:text-red-600'
-              }`}
+                }`}
             >
               <LogOut className="w-5 h-5" />
               <span className="font-medium">Exit Admin</span>
@@ -147,9 +142,8 @@ export const AdminLayout = () => {
       </aside>
 
       {/* Sidebar - Icon-only on md (768px–1023px) */}
-      <aside className={`hidden md:flex lg:hidden flex-col items-center w-[60px] border-r fixed top-0 h-screen z-30 py-4 backdrop-blur-xl ${
-        isDark ? 'border-white/[0.06] bg-[#0d0d12]/95' : 'border-black/[0.06] bg-white/95'
-      }`}>
+      <aside className={`hidden md:flex lg:hidden flex-col items-center w-[60px] border-r fixed top-0 h-screen z-30 py-4 backdrop-blur-xl ${isDark ? 'border-white/[0.06] bg-[#0d0d12]/95' : 'border-black/[0.06] bg-white/95'
+        }`}>
         <div className="mb-6 flex items-center justify-center w-10 h-10">
           <span className="font-bold text-[#588157] text-lg" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>R</span>
         </div>
@@ -174,9 +168,8 @@ export const AdminLayout = () => {
             >
               <item.icon className="w-5 h-5 text-[#588157]" />
               {/* Tooltip */}
-              <span className={`absolute left-full ml-3 px-2 py-1 rounded-md text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 ${
-                isDark ? 'bg-[#18181f] text-[#F5F5F0] border border-white/10' : 'bg-white text-[#1a1a14] border border-black/10'
-              }`}>
+              <span className={`absolute left-full ml-3 px-2 py-1 rounded-md text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 ${isDark ? 'bg-[#18181f] text-[#F5F5F0] border border-white/10' : 'bg-white text-[#1a1a14] border border-black/10'
+                }`}>
                 {item.label}
               </span>
             </NavLink>
@@ -186,27 +179,24 @@ export const AdminLayout = () => {
           <Link
             to="/"
             title="Home"
-            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-              isDark ? 'text-[#9A9A8E] hover:bg-white/5 hover:text-[#a3b18a]' : 'text-[#8a8a7a] hover:bg-black/5 hover:text-[#3a5a40]'
-            }`}
+            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${isDark ? 'text-[#9A9A8E] hover:bg-white/5 hover:text-[#a3b18a]' : 'text-[#8a8a7a] hover:bg-black/5 hover:text-[#3a5a40]'
+              }`}
           >
             <Home className="w-5 h-5" />
           </Link>
           <button
             onClick={() => setTheme(isDark ? 'light' : 'dark')}
             title="Toggle theme"
-            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-              isDark ? 'text-[#9A9A8E] hover:bg-white/5 hover:text-[#a3b18a]' : 'text-[#8a8a7a] hover:bg-black/5 hover:text-[#3a5a40]'
-            }`}
+            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${isDark ? 'text-[#9A9A8E] hover:bg-white/5 hover:text-[#a3b18a]' : 'text-[#8a8a7a] hover:bg-black/5 hover:text-[#3a5a40]'
+              }`}
           >
             {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
           <button
             onClick={() => signOut({ callbackUrl: '/' })}
             title="Exit Admin"
-            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-              isDark ? 'text-[#9A9A8E] hover:bg-red-500/10 hover:text-red-400' : 'text-[#8a8a7a] hover:bg-red-500/10 hover:text-red-600'
-            }`}
+            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${isDark ? 'text-[#9A9A8E] hover:bg-red-500/10 hover:text-red-400' : 'text-[#8a8a7a] hover:bg-red-500/10 hover:text-red-600'
+              }`}
           >
             <LogOut className="w-5 h-5" />
           </button>
@@ -233,9 +223,8 @@ export const AdminLayout = () => {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className={`md:hidden fixed top-16 left-0 bottom-0 w-[280px] flex flex-col border-r backdrop-blur-xl z-40 ${
-                isDark ? 'border-white/[0.06] bg-[#0d0d12]/98' : 'border-black/[0.06] bg-white/98'
-              }`}
+              className={`md:hidden fixed top-16 left-0 bottom-0 w-[280px] flex flex-col border-r backdrop-blur-xl z-40 ${isDark ? 'border-white/[0.06] bg-[#0d0d12]/98' : 'border-black/[0.06] bg-white/98'
+                }`}
             >
               <nav className="flex-1 px-4 space-y-1 overflow-y-auto pt-6">
                 {navItems.map((item) => (
@@ -269,11 +258,10 @@ export const AdminLayout = () => {
                   <Link
                     to="/"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 w-full ${
-                      isDark
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 w-full ${isDark
                         ? 'text-[#9A9A8E] hover:bg-white/5 hover:text-[#a3b18a]'
                         : 'text-[#8a8a7a] hover:bg-black/5 hover:text-[#3a5a40]'
-                    }`}
+                      }`}
                   >
                     <Home className="w-5 h-5" />
                     <span className="font-medium">Home</span>
@@ -282,11 +270,10 @@ export const AdminLayout = () => {
                   {/* Theme Toggle */}
                   <button
                     onClick={() => setTheme(isDark ? 'light' : 'dark')}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 w-full ${
-                      isDark
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 w-full ${isDark
                         ? 'text-[#9A9A8E] hover:bg-white/5 hover:text-[#a3b18a]'
                         : 'text-[#8a8a7a] hover:bg-black/5 hover:text-[#3a5a40]'
-                    }`}
+                      }`}
                   >
                     {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                     <span className="font-medium">Theme</span>
@@ -295,11 +282,10 @@ export const AdminLayout = () => {
                   {/* Exit Admin Button */}
                   <button
                     onClick={() => signOut({ callbackUrl: '/' })}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 w-full ${
-                      isDark
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 w-full ${isDark
                         ? 'text-[#9A9A8E] hover:bg-red-500/10 hover:text-red-400'
                         : 'text-[#8a8a7a] hover:bg-red-500/10 hover:text-red-600'
-                    }`}
+                      }`}
                   >
                     <LogOut className="w-5 h-5" />
                     <span className="font-medium">Exit Admin</span>

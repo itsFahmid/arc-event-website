@@ -162,7 +162,7 @@ export const About = () => {
                   }}
                 >
                   <p className="text-[#6a8a6a] text-xs uppercase tracking-[0.14em] font-medium">
-                    RoboFest 2025 · Bangladesh
+                    ARC 3.0 2025 · Bangladesh
                   </p>
                 </div>
               </div>
@@ -199,7 +199,7 @@ export const About = () => {
             </h2>
 
             <p className="text-[#4a6a4a] text-lg mb-8 leading-relaxed">
-              RoboFest 2025 isn't just an event — it's a proving ground. We bring together the most brilliant minds across universities to solve complex engineering challenges, push the boundaries of autonomous systems, and showcase the future of robotics.
+              ARC 3.0 2025 isn't just an event — it's a proving ground. We bring together the most brilliant minds across universities to solve complex engineering challenges, push the boundaries of autonomous systems, and showcase the future of robotics.
             </p>
 
             {/* Glass tag pills */}

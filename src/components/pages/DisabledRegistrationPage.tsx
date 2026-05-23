@@ -82,7 +82,7 @@ export default function DisabledRegistrationPage() {
 
         <div className="mt-8 text-center text-sm text-gray-500 flex items-center justify-center gap-2">
           <ShieldCheck className="w-4 h-4" />
-          <span>Secured by RoboFest Org</span>
+          <span>Secured by ARC 3.0 Org</span>
         </div>
       </div>
     </div>

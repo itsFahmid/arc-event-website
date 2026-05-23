@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 
 export const metadata: Metadata = {
-  title: "AUSTRC - RoboFest",
+  title: "AUSTRC - ARC 3.0",
   description: "AUST Robotics Club Event Management - Bangladesh's premier university robotics championship",
 };
 

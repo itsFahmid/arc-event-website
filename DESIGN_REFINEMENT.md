@@ -5,7 +5,7 @@
 
 ## Overview
 
-Complete visual refinement of the RoboFest 2025 website with:
+Complete visual refinement of the ARC 3.0 2025 website with:
 - **Sharp, crisp hero section** (NO blur)
 - **Unique liquid glass effects** per segment
 - **Premium glassmorphism** across content sections
@@ -355,5 +355,5 @@ Blur: 16-24px cards + 80-100px orbs
 **Design Style**: Premium, minimal, modern  
 **Inspiration**: Apple, Stripe, Vercel, high-end SaaS  
 **Tech Stack**: React, Framer Motion, Tailwind CSS  
-**Created For**: RoboFest 2025 Website  
+**Created For**: ARC 3.0 2025 Website  
 **Date**: May 2026

@@ -59,7 +59,7 @@ export const Footer = () => {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 pt-16 pb-10">
-        
+
         {/* ── Main Grid ── */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-14">
 
@@ -81,7 +81,7 @@ export const Footer = () => {
                 className="font-bold tracking-widest text-xl uppercase text-[#d4e8c2]"
                 style={{ fontFamily: "'Space Grotesk', sans-serif" }}
               >
-                RoboFest
+                ARC 3.0
               </span>
             </div>
 
@@ -153,11 +153,11 @@ export const Footer = () => {
               Contact
             </h4>
             <a
-              href="mailto:info@robofest.io"
+              href="mailto:info@ARC 3.0.io"
               className="text-sm text-[#2e4a2e] hover:text-[#a3b18a] transition-colors duration-200 w-fit flex items-center gap-2"
             >
               <Mail className="w-3.5 h-3.5 text-[#3d5a3d]" />
-              info@robofest.io
+              info@ARC 3.0.io
             </a>
             <a
               href="tel:+880123456789"
@@ -226,7 +226,7 @@ export const Footer = () => {
           }}
         >
           <p className="text-xs tracking-wider text-[#223322]">
-            © 2025 RoboFest · Robotics Club · All Rights Reserved
+            © 2025 ARC 3.0 · Robotics Club · All Rights Reserved
           </p>
           <div className="flex items-center gap-6 text-xs tracking-wider text-[#223322]">
             <a href="#" className="hover:text-[#6a8a6a] transition-colors">Privacy Policy</a>

@@ -1,4 +1,4 @@
-Redesign the Prize Pool section of the RoboFest 2025 landing page. Replace the current flat layout with a premium, editorial, structured design that feels prestigious and exciting.
+Redesign the Prize Pool section of the ARC 3.0 2025 landing page. Replace the current flat layout with a premium, editorial, structured design that feels prestigious and exciting.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 SECTION BACKGROUND

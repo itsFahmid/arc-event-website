@@ -8,7 +8,7 @@ const testimonials = [
     id: 1,
     name: 'Ayan Rahman',
     team: 'BUET Robotics Club',
-    quote: "RoboFest challenged us to push our autonomous navigation systems beyond anything we've done before. The competition is fierce, and the learning curve is massive."
+    quote: "ARC 3.0 challenged us to push our autonomous navigation systems beyond anything we've done before. The competition is fierce, and the learning curve is massive."
   },
   {
     id: 2,
@@ -26,13 +26,13 @@ const testimonials = [
     id: 4,
     name: 'Nusrat Jahan',
     team: 'DU Innovators',
-    quote: "The mentorship and technical support we received at RoboFest helped us refine our project into something we're truly proud of."
+    quote: "The mentorship and technical support we received at ARC 3.0 helped us refine our project into something we're truly proud of."
   },
   {
     id: 5,
     name: 'Rafiq Hassan',
     team: 'CUET Engineers',
-    quote: "Competing at RoboFest is more than winning prizes—it's about pushing boundaries and connecting with like-minded innovators."
+    quote: "Competing at ARC 3.0 is more than winning prizes—it's about pushing boundaries and connecting with like-minded innovators."
   }
 ];
 

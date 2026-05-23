@@ -4,7 +4,7 @@ import { useTheme } from 'next-themes';
 import { HelpCircle, HandHeart, MessageSquare, Plus, Edit2, Trash2, Globe, Image as ImageIcon } from 'lucide-react';
 
 const faqData = [
-  { id: 1, question: 'What is RoboFest?', answer: 'RoboFest is the premier university robotics event...', category: 'General' },
+  { id: 1, question: 'What is ARC 3.0?', answer: 'ARC 3.0 is the premier university robotics event...', category: 'General' },
   { id: 2, question: 'How do I register a team?', answer: 'You can register a team by visiting the registration page...', category: 'Registration' },
   { id: 3, question: 'Are there any registration fees?', answer: 'Yes, early bird registration is $50...', category: 'Payment' },
 ];
@@ -24,7 +24,7 @@ export default function AdminContentPage() {
   const itemBg = isDark ? 'bg-[#18181f] border-white/[0.07]' : 'bg-[#F0EDE6] border-black/[0.06]';
   const textColor = isDark ? 'text-[#F5F5F0]' : 'text-[#1a1a14]';
   const mutedText = isDark ? 'text-[#9A9A8E]' : 'text-[#4a4a40]';
-  
+
   const tabs = [
     { id: 'faq', label: 'FAQ Manager', icon: HelpCircle },
     { id: 'sponsors', label: 'Sponsors & Partners', icon: HandHeart },
@@ -49,11 +49,10 @@ export default function AdminContentPage() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all whitespace-nowrap ${
-              activeTab === tab.id
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all whitespace-nowrap ${activeTab === tab.id
                 ? (isDark ? 'bg-white/10 text-white shadow-sm' : 'bg-gray-100 text-gray-900 shadow-sm')
                 : (isDark ? 'text-gray-400 hover:text-white hover:bg-white/5' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50')
-            }`}
+              }`}
           >
             <tab.icon className="w-4 h-4" />
             {tab.label}
@@ -104,7 +103,7 @@ export default function AdminContentPage() {
                 Manage Tiers
               </button>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {sponsorsData.map((sponsor) => (
                 <div key={sponsor.id} className={`p-5 rounded-xl border flex flex-col items-center justify-center text-center transition-all hover:-translate-y-1 ${itemBg}`}>
@@ -112,13 +111,12 @@ export default function AdminContentPage() {
                     <ImageIcon className={`w-8 h-8 ${mutedText}`} />
                   </div>
                   <h4 className={`font-semibold text-lg ${textColor}`}>{sponsor.name}</h4>
-                  
+
                   <div className="flex flex-col gap-2 mt-3 items-center w-full">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
-                      sponsor.tier === 'Platinum' ? 'bg-gray-800 text-gray-200 border-gray-600' :
-                      sponsor.tier === 'Gold' ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' :
-                      'bg-gray-400/10 text-gray-400 border-gray-400/20'
-                    }`}>
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold border ${sponsor.tier === 'Platinum' ? 'bg-gray-800 text-gray-200 border-gray-600' :
+                        sponsor.tier === 'Gold' ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' :
+                          'bg-gray-400/10 text-gray-400 border-gray-400/20'
+                      }`}>
                       {sponsor.tier}
                     </span>
                     <span className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{sponsor.amount}</span>
@@ -144,14 +142,13 @@ export default function AdminContentPage() {
             <div className="flex justify-between items-center mb-6">
               <h2 className={`text-xl font-bold ${textColor}`} style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Homepage Announcements</h2>
             </div>
-            
+
             <div className={`p-8 rounded-xl border-2 border-dashed flex flex-col items-center justify-center text-center ${isDark ? 'border-white/10 bg-white/5' : 'border-gray-200 bg-gray-50'}`}>
               <MessageSquare className={`w-12 h-12 mb-4 ${mutedText} opacity-50`} />
               <h3 className={`font-semibold text-lg ${textColor} mb-2`}>No Active Announcements</h3>
               <p className={`${mutedText} text-sm max-w-md mb-6`}>Create an announcement banner that will appear at the top of the homepage for all visitors.</p>
-              <button className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                isDark ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-900'
-              }`}>
+              <button className={`px-4 py-2 rounded-lg font-medium transition-all ${isDark ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-900'
+                }`}>
                 Create Banner
               </button>
             </div>

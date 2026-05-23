@@ -23,7 +23,7 @@ async function main() {
 
   // 3. Seed FAQs
   const faqs = [
-    { question: 'Who can participate in RoboFest?', answer: 'Students from any recognized school, college, or university across the country can participate.', displayOrder: 1 },
+    { question: 'Who can participate in ARC 3.0?', answer: 'Students from any recognized school, college, or university across the country can participate.', displayOrder: 1 },
     { question: 'Are teams allowed to have members from different institutions?', answer: 'Yes, cross-institutional teams are allowed for all team segments.', displayOrder: 2 },
     { question: 'Is there a registration fee?', answer: 'Yes, registration fees vary by segment. Check the individual segment page for details.', displayOrder: 3 },
     { question: 'Can a participant register for multiple segments?', answer: 'Yes, as long as the schedules of the segments do not overlap.', displayOrder: 4 },
@@ -45,7 +45,7 @@ async function main() {
 
   // 5. Seed Past Events
   const pastEvents = [
-    { name: 'RoboFest 2024', date: new Date('2024-05-15'), description: 'The largest robotic showdown of the year with over 500 participants.', imageUrl: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80' },
+    { name: 'ARC 3.0 2024', date: new Date('2024-05-15'), description: 'The largest robotic showdown of the year with over 500 participants.', imageUrl: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80' },
     { name: 'National Line Follower Championship 2025', date: new Date('2025-02-10'), description: 'High speed algorithms meeting precision tracks.', imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80' },
   ];
   for (const event of pastEvents) {
@@ -85,7 +85,7 @@ async function main() {
 
   const adminPassword = process.env.ADMIN_PASSWORD;
   const hashedPassword = bcrypt.hashSync(adminPassword, 10);
-  
+
   const defaultAdmin = {
     name: 'AUSTRC Administrator',
     email: process.env.ADMIN_EMAIL,

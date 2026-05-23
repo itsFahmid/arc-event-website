@@ -11,7 +11,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
@@ -51,7 +51,7 @@ export default function LoginPage() {
           setError(data.message || 'Something went wrong during registration.');
         } else {
           setSuccess('Account created successfully! Logging you in...');
-          
+
           // Auto sign-in
           const signInRes = await signIn('credentials', {
             email,
@@ -120,7 +120,7 @@ export default function LoginPage() {
           <Link to="/" className="inline-flex items-center justify-center gap-2 mb-6 hover:opacity-80 transition-opacity">
             <Cpu className="text-[#588157] w-6 h-6" />
             <span className="font-bold tracking-widest text-lg uppercase text-[#F5F5F0]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-              RoboFest
+              ARC 3.0
             </span>
           </Link>
           <h2 className="text-4xl font-bold mb-3 text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
@@ -149,11 +149,11 @@ export default function LoginPage() {
           {isSignUp && (
             <div className="relative">
               <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#5A5A52]" />
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Full name" 
+                placeholder="Full name"
                 className="w-full bg-[#18181f] border border-white/[0.07] rounded-xl py-4 pl-12 pr-4 text-[#F5F5F0] placeholder:text-[#5A5A52] focus:outline-none focus:border-[#588157] transition-colors"
                 style={{ fontSize: '16px' }}
                 required
@@ -163,11 +163,11 @@ export default function LoginPage() {
 
           <div className="relative">
             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#5A5A52]" />
-            <input 
-              type="email" 
+            <input
+              type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email address" 
+              placeholder="Email address"
               className="w-full bg-[#18181f] border border-white/[0.07] rounded-xl py-4 pl-12 pr-4 text-[#F5F5F0] placeholder:text-[#5A5A52] focus:outline-none focus:border-[#588157] transition-colors"
               style={{ fontSize: '16px' }}
               required
@@ -176,17 +176,17 @@ export default function LoginPage() {
 
           <div className="relative">
             <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#5A5A52]" />
-            <input 
-              type={showPassword ? "text" : "password"} 
+            <input
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password" 
+              placeholder="Password"
               className="w-full bg-[#18181f] border border-white/[0.07] rounded-xl py-4 pl-12 pr-12 text-[#F5F5F0] placeholder:text-[#5A5A52] focus:outline-none focus:border-[#588157] transition-colors"
               style={{ fontSize: '16px' }}
               required
             />
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-[#5A5A52] hover:text-[#F5F5F0] transition-colors"
             >
@@ -202,12 +202,12 @@ export default function LoginPage() {
             </div>
           )}
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={loading}
             className="w-full bg-[#3a5a40] text-white py-4 rounded-xl font-bold hover:bg-[#344e41] disabled:opacity-50 transition-colors flex items-center justify-center gap-2 group mt-2"
           >
-            {loading ? 'Processing...' : isSignUp ? 'Sign Up' : 'Login'} 
+            {loading ? 'Processing...' : isSignUp ? 'Sign Up' : 'Login'}
             {!loading && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
           </button>
         </form>
@@ -223,8 +223,8 @@ export default function LoginPage() {
         </div>
 
         {/* Google OAuth Button */}
-        <button 
-          type="button" 
+        <button
+          type="button"
           onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
           className="w-full bg-[#18181f] text-[#F5F5F0] border border-white/[0.07] py-4 rounded-xl font-bold hover:bg-white/[0.03] transition-colors flex items-center justify-center gap-3"
         >
@@ -257,13 +257,13 @@ export default function LoginPage() {
         <div className="mt-8 pt-8 border-t border-white/[0.07] text-center">
           <p className="text-[#9A9A8E] text-sm">
             {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={() => {
                 setIsSignUp(!isSignUp);
                 setError('');
                 setSuccess('');
-              }} 
+              }}
               className="text-[#588157] hover:underline font-medium"
             >
               {isSignUp ? 'Log In Now →' : 'Register Now →'}
@@ -275,9 +275,9 @@ export default function LoginPage() {
           <div className="flex items-center justify-center -space-x-2 mb-3">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="w-8 h-8 rounded-full border-2 border-[#111116] bg-gray-800 overflow-hidden">
-                <img 
-                  src={`https://images.unsplash.com/photo-1531427186611-${i}b10b9?auto=format&fit=crop&q=80&w=100&h=100`} 
-                  alt="avatar" 
+                <img
+                  src={`https://images.unsplash.com/photo-1531427186611-${i}b10b9?auto=format&fit=crop&q=80&w=100&h=100`}
+                  alt="avatar"
                   className="w-full h-full object-cover"
                 />
               </div>

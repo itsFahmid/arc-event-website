@@ -18,9 +18,9 @@ export default function AdminSettingsPage() {
       icon: Globe,
       description: 'Configure basic event details and website behavior.',
       settings: [
-        { label: 'Event Name', type: 'text', value: 'RoboFest 2026' },
+        { label: 'Event Name', type: 'text', value: 'ARC 3.0 2026' },
         { label: 'Registration Status', type: 'select', value: 'Open' },
-        { label: 'Contact Email', type: 'email', value: 'support@robofest.edu' }
+        { label: 'Contact Email', type: 'email', value: 'support@ARC 3.0.edu' }
       ]
     },
     {
@@ -73,27 +73,25 @@ export default function AdminSettingsPage() {
                 {section.settings.map((setting, i) => (
                   <div key={i} className={`flex items-center justify-between p-4 rounded-xl border ${itemBg}`}>
                     <span className={`font-medium ${textColor}`}>{setting.label}</span>
-                    
+
                     {setting.type === 'toggle' && (
                       <div className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors ${setting.value ? 'bg-[#3a5a40]' : 'bg-gray-400'}`}>
                         <div className={`w-4 h-4 rounded-full bg-white transition-transform ${setting.value ? 'translate-x-6' : 'translate-x-0'}`} />
                       </div>
                     )}
-                    
+
                     {(setting.type === 'text' || setting.type === 'email') && (
-                      <input 
-                        type={setting.type} 
+                      <input
+                        type={setting.type}
                         defaultValue={setting.value as string}
-                        className={`px-3 py-1.5 rounded-lg border text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#588157]/40 ${
-                          isDark ? 'bg-[#18181f] border-white/[0.07] text-[#F5F5F0]' : 'bg-white border-gray-300 text-gray-900'
-                        }`}
+                        className={`px-3 py-1.5 rounded-lg border text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#588157]/40 ${isDark ? 'bg-[#18181f] border-white/[0.07] text-[#F5F5F0]' : 'bg-white border-gray-300 text-gray-900'
+                          }`}
                       />
                     )}
 
                     {setting.type === 'select' && (
-                      <select className={`px-3 py-1.5 rounded-lg border text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#588157]/40 ${
-                        isDark ? 'bg-[#18181f] border-white/[0.07] text-[#F5F5F0]' : 'bg-white border-gray-300 text-gray-900'
-                      }`}>
+                      <select className={`px-3 py-1.5 rounded-lg border text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#588157]/40 ${isDark ? 'bg-[#18181f] border-white/[0.07] text-[#F5F5F0]' : 'bg-white border-gray-300 text-gray-900'
+                        }`}>
                         <option>{setting.value}</option>
                         <option>Alternative Option</option>
                       </select>
@@ -109,15 +107,13 @@ export default function AdminSettingsPage() {
           <div className={`p-6 rounded-2xl border ${cardBg}`}>
             <h3 className={`text-lg font-bold ${textColor} mb-4`} style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Quick Actions</h3>
             <div className="space-y-3">
-              <button className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-colors ${
-                isDark ? 'border-white/10 hover:bg-white/5 text-gray-300' : 'border-gray-200 hover:bg-gray-50 text-gray-700'
-              }`}>
+              <button className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-colors ${isDark ? 'border-white/10 hover:bg-white/5 text-gray-300' : 'border-gray-200 hover:bg-gray-50 text-gray-700'
+                }`}>
                 <Key className="w-5 h-5" />
                 <span>Reset API Keys</span>
               </button>
-              <button className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-colors ${
-                isDark ? 'border-white/10 hover:bg-white/5 text-gray-300' : 'border-gray-200 hover:bg-gray-50 text-gray-700'
-              }`}>
+              <button className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-colors ${isDark ? 'border-white/10 hover:bg-white/5 text-gray-300' : 'border-gray-200 hover:bg-gray-50 text-gray-700'
+                }`}>
                 <Database className="w-5 h-5" />
                 <span>Export Database</span>
               </button>

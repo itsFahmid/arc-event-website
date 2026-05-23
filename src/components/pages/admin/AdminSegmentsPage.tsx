@@ -24,7 +24,7 @@ export default function AdminSegmentsPage() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className={`text-3xl font-bold ${textColor} mb-2`} style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Segments & Events</h1>
-          <p className={`${mutedText} text-lg`}>Manage the competitions and special events of RoboFest.</p>
+          <p className={`${mutedText} text-lg`}>Manage the competitions and special events of ARC 3.0.</p>
         </div>
         <button className={`px-4 py-2 rounded-lg font-semibold transition-all shadow-[0_2px_12px_rgba(0,0,0,0.15)] flex items-center gap-2 bg-[#3a5a40] text-white hover:bg-[#344e41]`}>
           <Plus className="w-4 h-4" />
@@ -37,7 +37,7 @@ export default function AdminSegmentsPage() {
           <div key={segment.id} className={`group relative p-6 rounded-2xl border transition-all duration-300 ${cardBg} overflow-hidden flex flex-col h-full`}>
             {/* Background Gradient */}
             <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${segment.color} blur-3xl rounded-full -mr-16 -mt-16 opacity-50 group-hover:opacity-100 transition-opacity`} />
-            
+
             <div className="flex justify-between items-start mb-6 relative z-10">
               <h3 className={`text-xl font-bold ${textColor}`} style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{segment.title}</h3>
               <div className="flex gap-2">
@@ -58,7 +58,7 @@ export default function AdminSegmentsPage() {
                 </div>
                 <span className={`font-semibold ${textColor}`}>{segment.participants} Registered</span>
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm">
                   <Trophy className={`w-4 h-4 text-yellow-500`} />
@@ -77,13 +77,12 @@ export default function AdminSegmentsPage() {
             </div>
 
             <div className={`mt-6 pt-4 border-t ${isDark ? 'border-white/10' : 'border-gray-100'} flex items-center justify-between relative z-10`}>
-              <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${
-                segment.status === 'Active' 
+              <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${segment.status === 'Active'
                   ? (isDark ? 'bg-[#588157]/10 text-[#a3b18a] border-[#588157]/20' : 'bg-[#3a5a40]/10 text-[#3a5a40] border-[#3a5a40]/20')
                   : segment.status === 'Upcoming'
-                  ? (isDark ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-blue-100 text-blue-700 border-blue-200')
-                  : (isDark ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' : 'bg-purple-100 text-purple-700 border-purple-200')
-              }`}>
+                    ? (isDark ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-blue-100 text-blue-700 border-blue-200')
+                    : (isDark ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' : 'bg-purple-100 text-purple-700 border-purple-200')
+                }`}>
                 {segment.status}
               </span>
               <button className={`text-sm font-medium hover:underline text-[#588157] hover:text-[#a3b18a]`}>
@@ -94,11 +93,10 @@ export default function AdminSegmentsPage() {
         ))}
 
         {/* Add New Card */}
-        <button className={`group flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed transition-all duration-300 min-h-[300px] ${
-          isDark 
-            ? 'border-white/20 hover:border-[#588157] hover:bg-[rgba(88,129,87,0.08)] text-[#9A9A8E] hover:text-[#a3b18a]' 
+        <button className={`group flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed transition-all duration-300 min-h-[300px] ${isDark
+            ? 'border-white/20 hover:border-[#588157] hover:bg-[rgba(88,129,87,0.08)] text-[#9A9A8E] hover:text-[#a3b18a]'
             : 'border-black/20 hover:border-[#3a5a40] hover:bg-[rgba(58,90,64,0.06)] text-[#4a4a40] hover:text-[#344e41]'
-        }`}>
+          }`}>
           <div className="w-16 h-16 rounded-full bg-current/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <Plus className="w-8 h-8" />
           </div>

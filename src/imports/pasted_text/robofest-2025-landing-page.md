@@ -1,4 +1,4 @@
-Design a premium, editorial-grade landing page for a university Robotics Club Event website called "RoboFest 2025". The design must feel like a world-class tech product launch page — not a student event website. Take inspiration from high-end DeFi platforms, futuristic VR brand sites, and premium hardware product pages.
+Design a premium, editorial-grade landing page for a university Robotics Club Event website called "ARC 3.0 2025". The design must feel like a world-class tech product launch page — not a student event website. Take inspiration from high-end DeFi platforms, futuristic VR brand sites, and premium hardware product pages.
 
 🎨 COLOR SYSTEM & VISUAL IDENTITY
 Dark Mode (Primary):
@@ -24,7 +24,7 @@ Vibe: Where Vercel meets F1 meets a robotics championship. Brutally minimal yet 
 ① NAVBAR
 
 Ultra-thin, full-width, sticky
-Left: Minimal logo — small circuit/robot glyph icon + "ROBOFEST" in tight uppercase tracking
+Left: Minimal logo — small circuit/robot glyph icon + "ARC 3.0" in tight uppercase tracking
 Center: Pill-shaped nav with frosted glass background — Home · Segments · Schedule · Sponsors · About
 Right: Ghost "Login" text link + solid green pill "Register Now" button
 Dark/Light toggle: Minimal icon, far right
@@ -82,7 +82,7 @@ Right:
 
 Small label: ABOUT THE EVENT
 Large headline: "Where Bangladesh's Best Engineers Compete."
-Body text: 2–3 sentences about RoboFest
+Body text: 2–3 sentences about ARC 3.0
 Two pill tags: Innovation · Competition · Community
 "Learn More" ghost button + "Watch a Video" with play icon
 
@@ -110,7 +110,7 @@ Divide into tiers with small gray labels: Title Sponsor / Co-Sponsors / Partners
 ⑧ PAST HIGHLIGHTS — Dark Gallery
 Layout: Masonry / asymmetric photo grid
 
-Section headline left: "Relive RoboFest 2024"
+Section headline left: "Relive ARC 3.0 2024"
 5 photos in uneven grid — some portrait, some landscape
 Each photo: dark overlay on hover, green frame appears
 One cell replaced by a video thumbnail with a large play button and glow effect
@@ -145,7 +145,7 @@ Green + / − toggle icon right-aligned
 ⑫ FOOTER
 
 4-column layout: Logo + tagline · Quick Links · Contact · Social
-Very bottom: thin rule + © 2025 RoboFest · Robotics Club · All Rights Reserved
+Very bottom: thin rule + © 2025 ARC 3.0 · Robotics Club · All Rights Reserved
 Background slightly lighter than #050508 — #0A0D14
 
 

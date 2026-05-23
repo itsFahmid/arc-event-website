@@ -57,10 +57,10 @@ export async function sendAdminVerificationEmail(email: string) {
   await transporter.sendMail({
     from: smtp.from,
     to: email,
-    subject: "Verify your RoboFest admin login",
+    subject: "Verify your ARC 3.0 admin login",
     text: `Click this link to verify your admin login: ${verificationUrl}\n\nThis link expires in 30 minutes.`,
     html: `
-      <p>Click the button below to verify your RoboFest admin login.</p>
+      <p>Click the button below to verify your ARC 3.0 admin login.</p>
       <p><a href="${verificationUrl}">Verify admin login</a></p>
       <p>This link expires in 30 minutes.</p>
     `,

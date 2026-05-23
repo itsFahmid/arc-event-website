@@ -1,7 +1,7 @@
 # Liquid Glass Effects & Video Background
 
 ## Overview
-Premium glassmorphism design system with sticky video background for RoboFest 2025 website.
+Premium glassmorphism design system with sticky video background for ARC 3.0 2025 website.
 
 ## Features Implemented
 
@@ -260,4 +260,4 @@ To add glass effect to any element:
 **Design Philosophy**: Premium, minimal, modern  
 **Inspiration**: Apple, Stripe, Vercel  
 **Tech Stack**: React, Framer Motion, Tailwind CSS, CSS Glassmorphism  
-**Created For**: RoboFest 2025 Website
+**Created For**: ARC 3.0 2025 Website

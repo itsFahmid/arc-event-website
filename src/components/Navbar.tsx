@@ -16,7 +16,7 @@ export const Navbar = () => {
   const { setTheme, isDark } = useResolvedTheme();
 
   useEffect(() => {
-    const handleScroll = () => {};
+    const handleScroll = () => { };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -60,9 +60,8 @@ export const Navbar = () => {
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 border-b ${
-          isDark ? 'border-white/[0.08]' : 'border-black/[0.06]'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 border-b ${isDark ? 'border-white/[0.08]' : 'border-black/[0.06]'
+          }`}
         style={{
           height: '68px',
           background: isDark
@@ -84,16 +83,15 @@ export const Navbar = () => {
                 className={`font-bold tracking-widest text-sm uppercase ${isDark ? 'text-[#F5F5F0]' : 'text-[#1a1a14]'}`}
                 style={{ fontFamily: "'Space Grotesk', sans-serif" }}
               >
-                RoboFest
+                ARC 3.0
               </span>
             </Link>
           </div>
 
           {/* ── Center: Nav pill — only above 950px ── */}
           <div
-            className={`hidden min-[951px]:flex items-center gap-1 border rounded-full px-2 py-1.5 absolute left-1/2 -translate-x-1/2 z-10 ${
-              isDark ? 'border-white/[0.12]' : 'border-black/[0.12]'
-            }`}
+            className={`hidden min-[951px]:flex items-center gap-1 border rounded-full px-2 py-1.5 absolute left-1/2 -translate-x-1/2 z-10 ${isDark ? 'border-white/[0.12]' : 'border-black/[0.12]'
+              }`}
             style={{
               background: isDark
                 ? 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%)'
@@ -131,11 +129,10 @@ export const Navbar = () => {
                       setHoveredIndex(null);
                       if (activeIndex !== -1) updateIndicator(activeIndex);
                     }}
-                    className={`text-sm font-medium transition-colors duration-200 ease-out rounded-full px-[18px] py-2 relative z-10 ${
-                      isActive
+                    className={`text-sm font-medium transition-colors duration-200 ease-out rounded-full px-[18px] py-2 relative z-10 ${isActive
                         ? isDark ? 'text-[#a3b18a]' : 'text-[#344e41]'
                         : isDark ? 'text-[#9A9A8E] hover:text-[#F5F5F0]' : 'text-[#4a4a40] hover:text-[#1a1a14]'
-                    }`}
+                      }`}
                     style={{ letterSpacing: '0.01em' }}
                   >
                     {item.name}
@@ -156,9 +153,8 @@ export const Navbar = () => {
             {/* Login — hidden at ≤1140px (moves to sidebar) */}
             <Link
               to="/login"
-              className={`hidden min-[1141px]:inline-flex text-sm font-medium transition-colors ${
-                isDark ? 'text-[#9A9A8E] hover:text-[#F5F5F0]' : 'text-[#4a4a40] hover:text-[#1a1a14]'
-              }`}
+              className={`hidden min-[1141px]:inline-flex text-sm font-medium transition-colors ${isDark ? 'text-[#9A9A8E] hover:text-[#F5F5F0]' : 'text-[#4a4a40] hover:text-[#1a1a14]'
+                }`}
             >
               Login
             </Link>
@@ -213,9 +209,8 @@ export const Navbar = () => {
               }}
             >
               {/* Header */}
-              <div className={`flex items-center justify-between px-6 h-[68px] border-b flex-shrink-0 ${
-                isDark ? 'border-white/[0.08]' : 'border-black/[0.08]'
-              }`}>
+              <div className={`flex items-center justify-between px-6 h-[68px] border-b flex-shrink-0 ${isDark ? 'border-white/[0.08]' : 'border-black/[0.08]'
+                }`}>
                 <span
                   className={`font-bold tracking-widest text-sm uppercase ${isDark ? 'text-[#a3b18a]' : 'text-[#3a5a40]'}`}
                   style={{ fontFamily: "'Space Grotesk', sans-serif" }}
@@ -224,11 +219,10 @@ export const Navbar = () => {
                 </span>
                 <button
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center border transition-all ${
-                    isDark
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center border transition-all ${isDark
                       ? 'bg-white/[0.04] border-white/10 text-[#F5F5F0] hover:bg-white/[0.08]'
                       : 'bg-black/[0.03] border-black/10 text-[#1a1a14] hover:bg-black/[0.06]'
-                  }`}
+                    }`}
                   aria-label="Close menu"
                 >
                   <X className="w-5 h-5" />
@@ -244,22 +238,20 @@ export const Navbar = () => {
                       key={item.name}
                       to={item.path}
                       onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center gap-3 px-4 min-h-[52px] rounded-xl my-1 font-medium transition-all ${
-                        isActive
+                      className={`flex items-center gap-3 px-4 min-h-[52px] rounded-xl my-1 font-medium transition-all ${isActive
                           ? isDark
                             ? 'bg-[#3a5a40]/20 text-[#a3b18a] border border-[#588157]/30'
                             : 'bg-[#a3b18a]/20 text-[#344e41] border border-[#3a5a40]/30'
                           : isDark
                             ? 'text-[#9A9A8E] hover:bg-white/[0.04] hover:text-[#F5F5F0]'
                             : 'text-[#4a4a40] hover:bg-black/[0.03] hover:text-[#1a1a14]'
-                      }`}
+                        }`}
                       style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                     >
-                      <div className={`w-1.5 h-1.5 rounded-full transition-all ${
-                        isActive
+                      <div className={`w-1.5 h-1.5 rounded-full transition-all ${isActive
                           ? 'bg-[#588157] scale-100'
                           : 'bg-transparent scale-0'
-                      }`} />
+                        }`} />
                       <span className="text-[15px]">{item.name}</span>
                     </Link>
                   );
@@ -267,13 +259,11 @@ export const Navbar = () => {
               </nav>
 
               {/* Bottom Actions */}
-              <div className={`px-4 py-5 border-t flex-shrink-0 space-y-3 ${
-                isDark ? 'border-white/[0.08]' : 'border-black/[0.08]'
-              }`}>
-                {/* Theme Toggle */}
-                <div className={`flex items-center justify-between px-4 py-3 rounded-xl border transition-all ${
-                  isDark ? 'bg-white/[0.03] border-white/[0.08]' : 'bg-black/[0.02] border-black/[0.08]'
+              <div className={`px-4 py-5 border-t flex-shrink-0 space-y-3 ${isDark ? 'border-white/[0.08]' : 'border-black/[0.08]'
                 }`}>
+                {/* Theme Toggle */}
+                <div className={`flex items-center justify-between px-4 py-3 rounded-xl border transition-all ${isDark ? 'bg-white/[0.03] border-white/[0.08]' : 'bg-black/[0.02] border-black/[0.08]'
+                  }`}>
                   <span className={`text-sm font-medium ${isDark ? 'text-[#F5F5F0]' : 'text-[#1a1a14]'}`} style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                     Theme
                   </span>
@@ -284,11 +274,10 @@ export const Navbar = () => {
                 <Link
                   to="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center justify-center h-[48px] rounded-xl border font-medium transition-all ${
-                    isDark
+                  className={`flex items-center justify-center h-[48px] rounded-xl border font-medium transition-all ${isDark
                       ? 'bg-white/[0.03] border-white/[0.08] text-[#F5F5F0] hover:bg-white/[0.06]'
                       : 'bg-black/[0.03] border-black/[0.08] text-[#1a1a14] hover:bg-black/[0.06]'
-                  }`}
+                    }`}
                   style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                 >
                   Login

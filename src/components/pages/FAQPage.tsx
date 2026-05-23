@@ -16,7 +16,7 @@ export default function FAQPage() {
           Got Questions?
         </h1>
         <p className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed mb-12">
-          Everything you need to know about registering, competing, and winning at RoboFest 2025.
+          Everything you need to know about registering, competing, and winning at ARC 3.0 2025.
         </p>
 
         {/* Filter Pills — horizontal scroll on mobile, wrap on larger screens */}
@@ -26,11 +26,10 @@ export default function FAQPage() {
           {['General', 'Registration', 'Payment', 'Segments', 'Technical'].map((f, i) => (
             <button
               key={f}
-              className={`flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 border min-h-[40px] ${
-                i === 0
+              className={`flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 border min-h-[40px] ${i === 0
                   ? 'bg-[rgba(88,129,87,0.12)] border-[#588157] text-[#a3b18a]'
                   : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
-              }`}
+                }`}
             >
               {f}
             </button>
@@ -41,7 +40,7 @@ export default function FAQPage() {
       <div className="max-w-4xl mx-auto px-6">
         <FAQ />
       </div>
-      
+
       {/* Bottom CTA */}
       <section className="py-24 px-6 max-w-4xl mx-auto mt-16 border-t border-white/5 text-center">
         <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
@@ -50,7 +49,7 @@ export default function FAQPage() {
         <p className="text-gray-400 mb-8">
           Can't find the answer you're looking for? Our support team is here to help.
         </p>
-        <motion.button 
+        <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className="inline-flex items-center gap-3 bg-[#3a5a40] text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-[#344e41] transition-colors shadow-[0_2px_12px_rgba(0,0,0,0.20)]"

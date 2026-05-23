@@ -35,7 +35,7 @@ export default function ClosedRegistrationPage() {
           </h2>
 
           <p className="text-gray-400 mb-8 leading-relaxed">
-            We've reached our maximum capacity. Registration for RoboFest 2025 is now closed. Thank you for your interest!
+            We've reached our maximum capacity. Registration for ARC 3.0 2025 is now closed. Thank you for your interest!
           </p>
 
           {/* Stats */}
@@ -79,8 +79,8 @@ export default function ClosedRegistrationPage() {
             <p className="text-sm text-gray-500 flex items-center justify-center gap-2">
               <Mail className="w-4 h-4" />
               Questions? Email us at{' '}
-              <a href="mailto:info@robofest2025.com" className="text-[#588157] hover:underline">
-                info@robofest2025.com
+              <a href="mailto:info@ARC 3.02025.com" className="text-[#588157] hover:underline">
+                info@ARC 3.02025.com
               </a>
             </p>
           </div>
@@ -88,7 +88,7 @@ export default function ClosedRegistrationPage() {
 
         <div className="mt-8 text-center text-sm text-gray-500 flex items-center justify-center gap-2">
           <ShieldCheck className="w-4 h-4" />
-          <span>See you at RoboFest 2025</span>
+          <span>See you at ARC 3.0 2025</span>
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Complete visual refinement of the RoboFest 2025 website with premium liquid glass effects, section-specific background blur, and enhanced visual separation. Inspired by modern design references showcasing dark themes with green tints and sophisticated glassmorphism.
+Complete visual refinement of the ARC 3.0 2025 website with premium liquid glass effects, section-specific background blur, and enhanced visual separation. Inspired by modern design references showcasing dark themes with green tints and sophisticated glassmorphism.
 
 ---
 
@@ -566,7 +566,7 @@ transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
 **Design Style**: Premium liquid glass with modern glassmorphism  
 **Inspiration**: Reference images (dark theme, green tints, premium depth)  
 **Tech Stack**: React 18, Framer Motion, Tailwind CSS v4  
-**Created For**: RoboFest 2025 Website  
+**Created For**: ARC 3.0 2025 Website  
 **Final Update**: May 2026  
 
 **Result**: A visually stunning, modern website with perfect balance of sharpness (hero) and liquid glass depth (content sections), featuring the premium "Compete for Glory. Win Big." glass panel as the centerpiece.

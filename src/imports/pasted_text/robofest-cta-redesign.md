@@ -1,4 +1,4 @@
-Completely redesign the "Ready to Compete?" CTA section of the RoboFest 2025 landing page. The current version is too empty and plain. Make it visually rich, editorial, and unique — it should feel like the grand finale of the page.
+Completely redesign the "Ready to Compete?" CTA section of the ARC 3.0 2025 landing page. The current version is too empty and plain. Make it visually rich, editorial, and unique — it should feel like the grand finale of the page.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 SECTION CONCEPT
@@ -106,7 +106,7 @@ BOTTOM STRIP — INSIDE THE SECTION
 At the very bottom of this section, before the footer divider:
 A thin full-width strip — background rgba(255,255,255,0.02), border-top 1px solid rgba(255,255,255,0.04), height 52px.
 Content inside (centered horizontally, spread with space-between):
-  Left: "RoboFest 2025 · Robotics Club" — 12px, color #4A4A40
+  Left: "ARC 3.0 2025 · Robotics Club" — 12px, color #4A4A40
   Center: 5 small university name pills — each pill: background rgba(255,255,255,0.03), border 1px solid rgba(255,255,255,0.06), text 11px #5A5A52, padding 4px 10px, border-radius 999px. Names: "BUET" · "KUET" · "RUET" · "SUST" · "DIU"
   Right: "View Event Rules →" — 12px, color #588157, hover underline
 

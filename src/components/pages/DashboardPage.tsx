@@ -84,7 +84,7 @@ export default function DashboardPage() {
           {getGreeting()}, <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a3b18a] to-[#588157]">Alex</span> 👋
         </h1>
         <p className={`text-base sm:text-lg ${isDark ? 'text-[#9A9A8E]' : 'text-[#8a8a7a]'}`}>
-          Here's what's happening with your RoboFest 2026 journey.
+          Here's what's happening with your ARC 3.0 2026 journey.
         </p>
       </motion.div>
 
