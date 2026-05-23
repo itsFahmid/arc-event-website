@@ -80,7 +80,17 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id;
-        session.user.role = token.role;
+        const currentUser = session.user.email
+          ? await prisma.user.findUnique({
+              where: { email: session.user.email },
+              select: { role: true, emailVerified: true },
+            })
+          : null;
+
+        session.user.role =
+          currentUser?.role === "admin" && isAdminEmail(session.user.email || "") && currentUser.emailVerified
+            ? "admin"
+            : currentUser?.role || token.role;
       }
       return session;
     }
