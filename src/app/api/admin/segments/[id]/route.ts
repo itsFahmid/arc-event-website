@@ -24,7 +24,7 @@ const segments: Record<
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -35,7 +35,8 @@ export async function GET(
       );
     }
 
-    const segmentId = parseInt(params.id);
+    const { id } = await params;
+    const segmentId = parseInt(id);
     const segment = segments[segmentId];
 
     if (!segment) {
@@ -68,7 +69,7 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -79,7 +80,8 @@ export async function PUT(
       );
     }
 
-    const segmentId = parseInt(params.id);
+    const { id } = await params;
+    const segmentId = parseInt(id);
     const segment = segments[segmentId];
 
     if (!segment) {
@@ -116,7 +118,7 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -127,7 +129,8 @@ export async function DELETE(
       );
     }
 
-    const segmentId = parseInt(params.id);
+    const { id } = await params;
+    const segmentId = parseInt(id);
     if (!segments[segmentId]) {
       return NextResponse.json(
         { success: false, error: "NOT_FOUND", message: "Segment not found" },

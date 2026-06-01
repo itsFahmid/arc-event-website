@@ -11,6 +11,7 @@ import {
   useAdminDialog,
   FormField,
   SelectField,
+  TextareaField,
 } from "@/components/SharedAdminPanel";
 import type { TableColumn } from "@/components/SharedAdminPanel/types/admin";
 
@@ -27,6 +28,8 @@ interface Sponsor {
 export default function AdminSponsorsPage() {
   const { data: session, status } = useSession();
   const [isClient, setIsClient] = useState(false);
+  const [formData, setFormData] = useState<any>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     data: sponsors,
@@ -84,31 +87,15 @@ export default function AdminSponsorsPage() {
     },
   ];
 
-  const handleCreate = async (formData: any) => {
-    try {
-      await createItem(formData);
-      dialog.close();
-      toast.success("Sponsor created successfully");
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to create sponsor";
-      toast.error(message);
-    }
-  };
-
   const handleEdit = (sponsor: Sponsor) => {
     dialog.open("edit", sponsor);
-  };
-
-  const handleUpdate = async (formData: any) => {
-    if (!dialog.data?.id) return;
-    try {
-      await updateItem(dialog.data.id, formData);
-      dialog.close();
-      toast.success("Sponsor updated successfully");
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to update sponsor";
-      toast.error(message);
-    }
+    setFormData({
+      name: sponsor.name,
+      category: sponsor.category,
+      description: sponsor.description,
+      websiteUrl: sponsor.websiteUrl,
+      logoUrl: sponsor.logoUrl,
+    });
   };
 
   const handleDelete = async (sponsor: Sponsor) => {
@@ -121,11 +108,24 @@ export default function AdminSponsorsPage() {
     }
   };
 
-  const handleDialogSubmit = async (formData: any) => {
-    if (dialog.mode === "create") {
-      await handleCreate(formData);
-    } else {
-      await handleUpdate(formData);
+  const handleDialogSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      if (dialog.mode === "create") {
+        await createItem(formData);
+        toast.success("Sponsor created successfully");
+      } else if (dialog.data?.id) {
+        await updateItem(dialog.data.id, formData);
+        toast.success("Sponsor updated successfully");
+      }
+      dialog.close();
+      setFormData({});
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to save sponsor";
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -142,7 +142,10 @@ export default function AdminSponsorsPage() {
         onSearch={search}
         actionButton={{
           label: "Add Sponsor",
-          onClick: () => dialog.open("create"),
+          onClick: () => {
+            dialog.open("create");
+            setFormData({});
+          },
         }}
       />
 
@@ -163,50 +166,66 @@ export default function AdminSponsorsPage() {
 
       <CreateEditDialog
         isOpen={dialog.isOpen}
-        mode={dialog.mode}
         title={dialog.mode === "create" ? "Create Sponsor" : "Edit Sponsor"}
+        onClose={() => {
+          dialog.close();
+          setFormData({});
+        }}
         onSubmit={handleDialogSubmit}
-        onOpenChange={(open) => !open && dialog.close()}
-        fields={[
-          {
-            name: "name",
-            label: "Sponsor Name",
-            type: "text",
-            required: true,
-            defaultValue: dialog.data?.name,
-          },
-          {
-            name: "category",
-            label: "Category",
-            type: "select",
-            options: [
+        isLoading={isSubmitting}
+        submitButtonText={dialog.mode === "create" ? "Create" : "Update"}
+      >
+        <div className="space-y-4">
+          <FormField
+            label="Sponsor Name"
+            name="name"
+            type="text"
+            required
+            value={formData.name || ""}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            placeholder="Enter sponsor name"
+          />
+          
+          <SelectField
+            label="Category"
+            name="category"
+            value={formData.category || ""}
+            onChange={(value) => setFormData({ ...formData, category: value })}
+            options={[
               { label: "Platinum", value: "platinum" },
               { label: "Gold", value: "gold" },
               { label: "Silver", value: "silver" },
               { label: "Bronze", value: "bronze" },
-            ],
-            defaultValue: dialog.data?.category,
-          },
-          {
-            name: "description",
-            label: "Description",
-            type: "textarea",
-            defaultValue: dialog.data?.description,
-          },
-          {
-            name: "websiteUrl",
-            label: "Website URL",
-            type: "url",
-            defaultValue: dialog.data?.websiteUrl,
-          },
-          {
-            name: "logoUrl",
-            label: "Logo URL",
-            type: "url",
-            defaultValue: dialog.data?.logoUrl,
-          },
-        ]}
-      />
+            ]}
+          />
+
+          <TextareaField
+            label="Description"
+            name="description"
+            value={formData.description || ""}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            placeholder="Enter sponsor description"
+          />
+
+          <FormField
+            label="Website URL"
+            name="websiteUrl"
+            type="url"
+            value={formData.websiteUrl || ""}
+            onChange={(e) => setFormData({ ...formData, websiteUrl: e.target.value })}
+            placeholder="https://example.com"
+          />
+
+          <FormField
+            label="Logo URL"
+            name="logoUrl"
+            type="url"
+            value={formData.logoUrl || ""}
+            onChange={(e) => setFormData({ ...formData, logoUrl: e.target.value })}
+            placeholder="https://example.com/logo.png"
+          />
+        </div>
+      </CreateEditDialog>
     </div>
   );
 }
