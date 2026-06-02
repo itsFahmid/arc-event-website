@@ -1,10 +1,20 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
-import { ArrowRight, ShieldCheck, User, Phone, Building2, Users, Trophy, Mail } from 'lucide-react';
+import { ArrowRight, ShieldCheck, User, Phone, Building2, Users, Trophy, Mail, Loader2 } from 'lucide-react';
 import { Link } from '@/lib/router-compat';
 
 export default function RegisterPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [eventDetails, setEventDetails] = useState({
+    eventName: 'ARC 3.0',
+    eventDate: 'June 15-17, 2026',
+    minMembers: 1,
+    maxMembers: 5,
+  });
+
   const [formData, setFormData] = useState({
     teamName: '',
     institution: '',
@@ -23,6 +33,42 @@ export default function RegisterPage() {
     'Innovation Challenge',
   ];
 
+  useEffect(() => {
+    async function checkRegistration() {
+      try {
+        const res = await fetch('/api/settings');
+        if (res.ok) {
+          const settings = await res.json();
+          
+          // Check deadline
+          const deadline = settings.registration_deadline ? new Date(settings.registration_deadline) : null;
+          const isPastDeadline = deadline ? new Date() > deadline : false;
+          
+          if (settings.registration_status === 'closed' || isPastDeadline) {
+            router.push('/closed_reg');
+            return;
+          }
+          if (settings.registration_status === 'disabled') {
+            router.push('/disable_reg');
+            return;
+          }
+          
+          setEventDetails({
+            eventName: settings.event_name || 'ARC 3.0',
+            eventDate: settings.event_date || 'June 15-17, 2026',
+            minMembers: parseInt(settings.min_members_per_team) || 1,
+            maxMembers: parseInt(settings.max_members_per_team) || 5,
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching settings:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    checkRegistration();
+  }, [router]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Registration submitted:', formData);
@@ -32,6 +78,17 @@ export default function RegisterPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen relative flex items-center justify-center pt-24 pb-12 px-4 sm:px-6 bg-[#0A0A0F]">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-10 h-10 animate-spin text-[#588157]" />
+          <p className="text-gray-400 text-sm">Checking registration details...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen relative flex items-center justify-center pt-24 pb-12 px-4 sm:px-6">
@@ -54,7 +111,7 @@ export default function RegisterPage() {
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm mb-4 backdrop-blur-sm">
               <Trophy className="w-4 h-4 text-[#588157]" />
-              <span className="text-gray-300">ARC 3.0 2025 Registration</span>
+              <span className="text-gray-300">{eventDetails.eventName} Registration</span>
             </div>
             <h1
               className="text-4xl md:text-5xl font-bold mb-3"
@@ -182,20 +239,20 @@ export default function RegisterPage() {
               {/* Number of Members */}
               <div>
                 <label htmlFor="members" className="block text-sm font-medium text-gray-300 mb-2">
-                  Number of Team Members *
+                  Number of Team Members * (Between {eventDetails.minMembers} and {eventDetails.maxMembers})
                 </label>
                 <input
                   type="number"
                   id="members"
                   name="members"
                   required
-                  min="1"
-                  max="10"
+                  min={eventDetails.minMembers}
+                  max={eventDetails.maxMembers}
                   value={formData.members}
                   onChange={handleChange}
                   className="w-full bg-[#18181f] border border-white/[0.07] rounded-lg px-4 py-3 text-[#F5F5F0] placeholder:text-[#5A5A52] focus:outline-none focus:border-[#588157] transition-colors"
                   style={{ fontSize: '16px' }}
-                  placeholder="e.g., 4"
+                  placeholder={`e.g., ${eventDetails.maxMembers}`}
                 />
               </div>
 
@@ -244,7 +301,7 @@ export default function RegisterPage() {
 
         <div className="mt-8 text-center text-sm text-gray-500 flex items-center justify-center gap-2">
           <ShieldCheck className="w-4 h-4" />
-          <span>Secured by ARC 3.0 Org</span>
+          <span>Secured by {eventDetails.eventName} Org</span>
         </div>
       </div>
     </div>
