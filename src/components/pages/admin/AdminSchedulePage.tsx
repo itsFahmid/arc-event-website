@@ -28,6 +28,7 @@ export default function AdminSchedulePage() {
   const [saving, setSaving] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<ScheduleItem | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   const [form, setForm] = useState({
     title: '',
@@ -45,8 +46,14 @@ export default function AdminSchedulePage() {
   const mutedText = isDark ? 'text-[#9A9A8E]' : 'text-[#4a4a40]';
 
   useEffect(() => {
-    fetchData();
+    setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      fetchData();
+    }
+  }, [mounted]);
 
   const fetchData = async () => {
     try {
@@ -81,15 +88,21 @@ export default function AdminSchedulePage() {
 
   const formatTimeRange = (startStr: string, endStr: string) => {
     const formatTime = (date: Date) => {
-      return date.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-      });
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      const ampm = date.getHours() >= 12 ? 'PM' : 'AM';
+      const displayHours = (date.getHours() % 12 || 12).toString().padStart(2, '0');
+      return `${displayHours}:${minutes} ${ampm}`;
     };
     const s = new Date(startStr);
     const e = new Date(endStr);
     return `${formatTime(s)} - ${formatTime(e)}`;
+  };
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
   };
 
   const openAddModal = () => {
@@ -193,21 +206,21 @@ export default function AdminSchedulePage() {
   // Group events by date dynamically
   const uniqueDates = Array.from(new Set(events.map(e => new Date(e.startTime).toDateString()))).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
 
-  const dayGroups = uniqueDates.map((dateStr, index) => {
+  const dayGroups = mounted ? uniqueDates.map((dateStr, index) => {
     const dayEvents = events.filter(e => new Date(e.startTime).toDateString() === dateStr);
     return {
       day: `Day ${index + 1}`,
-      date: new Date(dateStr).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+      date: formatDate(dateStr),
       events: dayEvents
     };
-  });
+  }) : [];
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className={`text-3xl font-bold ${textColor} mb-2`} style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Schedule Manager</h1>
-          <p className={`${mutedText} text-lg`}>Update event timings, locations, and manage the daily agenda.</p>
+          <h1 suppressHydrationWarning className={`text-3xl font-bold ${textColor} mb-2`} style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Schedule Manager</h1>
+          <p suppressHydrationWarning className={`${mutedText} text-lg`}>Update event timings, locations, and manage the daily agenda.</p>
         </div>
         <button 
           onClick={openAddModal}
@@ -218,7 +231,12 @@ export default function AdminSchedulePage() {
         </button>
       </div>
 
-      {loading ? (
+      {!mounted ? (
+        <div className="flex flex-col items-center justify-center py-20 gap-4">
+          <Loader2 className="w-10 h-10 animate-spin text-[#588157]" />
+          <p className="text-[#9A9A8E]">Loading schedule...</p>
+        </div>
+      ) : loading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-4">
           <Loader2 className="w-10 h-10 animate-spin text-[#588157]" />
           <p className={mutedText}>Loading schedule...</p>
@@ -441,4 +459,4 @@ export default function AdminSchedulePage() {
       )}
     </div>
   );
-}
+}
