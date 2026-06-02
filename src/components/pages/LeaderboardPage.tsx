@@ -1,13 +1,16 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Trophy, Medal, Award, Filter } from 'lucide-react';
+import { Trophy, Medal, Award, Filter, Loader2, Lock } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { Link } from '@/lib/router-compat';
 
 export default function LeaderboardPage() {
   const { theme } = useTheme();
   const isDark = theme === 'dark' || !theme;
   const [selectedEvent, setSelectedEvent] = useState('overall');
+  const [loading, setLoading] = useState(true);
+  const [enabled, setEnabled] = useState(true);
 
   const events = [
     { id: 'overall', name: 'Overall Ranking' },
@@ -27,12 +30,57 @@ export default function LeaderboardPage() {
     { rank: 8, name: 'Volt Vectors', university: 'DU', points: 730, avatar: 'https://api.dicebear.com/7.x/shapes/svg?seed=volt' },
   ];
 
+  useEffect(() => {
+    async function loadSettings() {
+      try {
+        const res = await fetch('/api/settings');
+        if (res.ok) {
+          const settings = await res.json();
+          setEnabled(settings.enable_leaderboard !== 'false');
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadSettings();
+  }, []);
+
   const getRankIcon = (rank: number) => {
     if (rank === 1) return <Trophy className="w-6 h-6 text-yellow-400" />;
     if (rank === 2) return <Medal className="w-6 h-6 text-gray-400" />;
     if (rank === 3) return <Award className="w-6 h-6 text-amber-600" />;
     return null;
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-32 gap-4">
+        <Loader2 className="w-10 h-10 animate-spin text-[#588157]" />
+        <p className="text-gray-400 text-sm">Loading leaderboard...</p>
+      </div>
+    );
+  }
+
+  if (!enabled) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center max-w-md mx-auto px-4">
+        <div className={`p-5 rounded-full mb-6 ${isDark ? 'bg-white/5 text-gray-400' : 'bg-gray-100 text-gray-700'}`}>
+          <Lock className="w-12 h-12" />
+        </div>
+        <h2 className={`text-2xl font-bold mb-3 ${isDark ? 'text-white' : 'text-[#1a1a14]'}`} style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+          Leaderboard Unavailable
+        </h2>
+        <p className={`text-sm leading-relaxed mb-8 ${isDark ? 'text-[#9A9A8E]' : 'text-[#8a8a7a]'}`}>
+          The public leaderboard is currently locked by the event administrators. Rankings will be displayed once the competition results are officially published.
+        </p>
+        <Link to="/" className="px-6 py-2.5 rounded-lg bg-[#3a5a40] text-white hover:bg-[#344e41] font-semibold transition-all">
+          Go Back Home
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div>
