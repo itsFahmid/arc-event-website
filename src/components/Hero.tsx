@@ -18,29 +18,53 @@ export const Hero = () => {
     mins: 30,
     secs: 0,
   });
+  const [targetDate, setTargetDate] = useState<Date | null>(null);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        let { days, hours, mins, secs } = prev;
-        if (secs > 0) secs--;
-        else {
-          secs = 59;
-          if (mins > 0) mins--;
-          else {
-            mins = 59;
-            if (hours > 0) hours--;
-            else {
-              hours = 23;
-              if (days > 0) days--;
-            }
+    async function fetchSettings() {
+      try {
+        const res = await fetch('/api/settings');
+        if (res.ok) {
+          const settings = await res.json();
+          if (settings.event_starting_deadline) {
+            setTargetDate(new Date(settings.event_starting_deadline));
+            return;
           }
         }
-        return { days, hours, mins, secs };
-      });
-    }, 1000);
-    return () => clearInterval(timer);
+      } catch (err) {
+        console.error('Failed to fetch event starting deadline:', err);
+      }
+      // Fallback: Default starting deadline if API fails or settings not set
+      setTargetDate(new Date('2026-06-15T09:00:00'));
+    }
+    fetchSettings();
   }, []);
+
+  useEffect(() => {
+    if (!targetDate) return;
+
+    const calculateTimeLeft = () => {
+      const difference = targetDate.getTime() - Date.now();
+      if (difference <= 0) {
+        return { days: 0, hours: 0, mins: 0, secs: 0 };
+      }
+      return {
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+        mins: Math.floor((difference / 1000 / 60) % 60),
+        secs: Math.floor((difference / 1000) % 60),
+      };
+    };
+
+    // Calculate immediately to avoid delay
+    setTimeLeft(calculateTimeLeft());
+
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [targetDate]);
 
   const stats = [
     {
