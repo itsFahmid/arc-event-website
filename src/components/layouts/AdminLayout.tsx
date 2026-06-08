@@ -13,7 +13,8 @@ import {
   LogOut,
   Moon,
   Sun,
-  Home
+  Home,
+  Trophy
 } from 'lucide-react';
 import { AnimatedMenuButton } from '@/components/AnimatedMenuButton';
 import { signOut } from 'next-auth/react';
@@ -22,6 +23,7 @@ const navItems = [
   { path: '/admin', icon: LayoutDashboard, label: 'Overview', end: true },
   { path: '/admin/users', icon: Users, label: 'Users & Teams' },
   { path: '/admin/segments', icon: Swords, label: 'Segments' },
+  { path: '/admin/leaderboard', icon: Trophy, label: 'Leaderboard' },
   { path: '/admin/schedule', icon: Calendar, label: 'Schedule' },
   { path: '/admin/content', icon: LayoutTemplate, label: 'Content' },
   { path: '/admin/settings', icon: Settings, label: 'Settings' },
