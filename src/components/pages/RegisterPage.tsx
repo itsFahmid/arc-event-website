@@ -13,14 +13,10 @@ import {
   Mail,
   Loader2,
   Lock,
-  CheckCircle,
-  Megaphone,
-  QrCode,
-  Award,
-  Activity,
 } from "lucide-react";
 import { Link } from "@/lib/router-compat";
-import { toast } from "sonner";
+import { toast } from "sonner"; // Import Sonner Toast for consistent UI toasts
+import { signIn } from "next-auth/react";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -49,11 +45,12 @@ export default function RegisterPage() {
     phone: "",
     members: "",
     segment: "",
-    password: "", // Added password field
+    password: "",
+    confirmPassword: "",
   });
 
   const [dbSegments, setDbSegments] = useState<
-    Array<{ id: number; name: string }>
+    Array<{ id: number; name: string; status?: string }>
   >([]);
   const [submitting, setSubmitting] = useState(false);
 
@@ -104,7 +101,12 @@ export default function RegisterPage() {
 
         if (segmentsRes.ok) {
           const segmentsList = await segmentsRes.json();
-          setDbSegments(segmentsList);
+          if (Array.isArray(segmentsList)) {
+            setDbSegments(segmentsList);
+          } else {
+            console.error("Expected array of segments in registration page, received:", segmentsList);
+            setDbSegments([]);
+          }
         }
       } catch (err) {
         console.error("Error fetching settings/segments:", err);
@@ -139,6 +141,14 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+    if (formData.password.length < 8) {
+      toast.error("Password must be at least 8 characters long");
+      return;
+    }
     setSubmitting(true);
     try {
       const res = await fetch("/api/register", {
@@ -162,14 +172,22 @@ export default function RegisterPage() {
       }
 
       if (res.ok) {
-        toast.success("Registration submitted successfully!");
-        setIsSuccess(true); // Trigger the inline success banner inside the form [1]
-
-        // Auto-scroll smoothly to the top of the screen so they instantly see the green banner [1]
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth",
+        toast.success(data.message || "Registration submitted successfully!");
+        
+        // Auto-login the user immediately after registering
+        const loginRes = await signIn("credentials", {
+          redirect: false,
+          email: formData.email,
+          password: formData.password,
         });
+
+        if (loginRes?.error) {
+          console.error("Auto-login failed:", loginRes.error);
+          toast.error("Auto-login failed. Please log in manually.");
+          router.push("/login");
+        } else {
+          router.push("/dashboard/events");
+        }
       } else {
         toast.error(data.message || "Failed to submit registration.");
         setSubmitting(false);
@@ -188,10 +206,10 @@ export default function RegisterPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen relative flex items-center justify-center pt-24 pb-12 px-4 sm:px-6 bg-[#0A0A0F]">
+      <div className="min-h-screen relative flex items-center justify-center pt-24 pb-12 px-4 sm:px-6 bg-background">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-10 h-10 animate-spin text-[#588157]" />
-          <p className="text-gray-400 text-sm">
+          <p className="text-sm" style={{ color: 'var(--text-body)' }}>
             Checking registration details...
           </p>
         </div>
@@ -206,50 +224,69 @@ export default function RegisterPage() {
         <div className="text-center mb-6">
           <Link
             to="/"
-            className="text-gray-400 text-sm tracking-widest hover:text-white transition-colors"
+            className="text-sm tracking-widest hover:text-[var(--text-heading)] transition-colors"
+            style={{ color: 'var(--text-body)' }}
           >
             ← BACK TO HOME
           </Link>
         </div>
 
-        {/* Title Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm mb-4 backdrop-blur-sm">
-            <Trophy className="w-4 h-4 text-[#588157]" />
-            <span className="text-gray-300">
-              {eventDetails.eventName} Unified Registration
-            </span>
-          </div>
-          <h1
-            className="text-4xl md:text-5xl font-bold mb-3"
-            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-          >
-            Register Your <span className="text-[#a3b18a]">Team</span>
-          </h1>
-          <p className="text-gray-400">
-            Create an account and register for event segments in a single,
-            simple step.
-          </p>
-
-          {/* Countdown timer */}
-          {timeLeft && (
-            <div className="mt-6 space-y-2 animate-in fade-in duration-500">
-              <span className="text-xs font-semibold text-[#a3b18a]/80 uppercase tracking-widest block">
-                Registration Closes In
+        {/* Registration Form */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm mb-4 backdrop-blur-sm"
+              style={{
+                background: 'var(--glass-panel-bg)',
+                borderColor: 'var(--glass-panel-border)',
+                borderWidth: '1px',
+              }}
+            >
+              <Trophy className="w-4 h-4 text-[#588157]" />
+              <span style={{ color: 'var(--text-heading)' }}>
+                {eventDetails.eventName} Registration
               </span>
-              <div className="flex justify-center gap-3">
-                {[
-                  { label: "Days", value: timeLeft.days },
-                  { label: "Hours", value: timeLeft.hours },
-                  { label: "Mins", value: timeLeft.minutes },
-                  { label: "Secs", value: timeLeft.seconds },
-                ].map((t, i) => (
-                  <div
-                    key={i}
-                    className="w-16 h-16 bg-[#111116]/90 border border-white/[0.07] rounded-xl flex flex-col items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.25)]"
-                  >
-                    <div className="text-[#a3b18a] font-bold text-xl font-mono leading-none">
-                      {String(t.value).padStart(2, "0")}
+            </div>
+            <h1
+              className="text-4xl md:text-5xl font-bold mb-3"
+              style={{ color: 'var(--text-heading)', fontFamily: "'Space Grotesk', sans-serif" }}
+            >
+              Register Your <span className="text-[#588157]">Team</span>
+            </h1>
+            <p style={{ color: 'var(--text-body)' }}>
+              Join Bangladesh\'s most anticipated university robotics championship
+            </p>
+
+            {timeLeft && (
+              <div className="mt-6 space-y-2 animate-in fade-in duration-500">
+                <span className="text-xs font-semibold uppercase tracking-widest block" style={{ color: 'var(--text-label)' }}>
+                  Registration Closes In
+                </span>
+                <div className="flex justify-center gap-3">
+                  {[
+                    { label: "Days", value: timeLeft.days },
+                    { label: "Hours", value: timeLeft.hours },
+                    { label: "Mins", value: timeLeft.minutes },
+                    { label: "Secs", value: timeLeft.seconds },
+                  ].map((t, i) => (
+                    <div
+                      key={i}
+                      className="w-16 h-16 border rounded-xl flex flex-col items-center justify-center"
+                      style={{
+                        background: 'var(--glass-panel-bg)',
+                        borderColor: 'var(--glass-panel-border)',
+                        boxShadow: 'var(--glass-panel-shadow)',
+                      }}
+                    >
+                      <div className="font-bold text-xl font-mono leading-none" style={{ color: 'var(--text-heading)' }}>
+                        {String(t.value).padStart(2, "0")}
+                      </div>
+                      <div className="text-[10px] font-semibold tracking-wider mt-1 uppercase" style={{ color: 'var(--text-muted)' }}>
+                        {t.label}
+                      </div>
                     </div>
                     <div className="text-[10px] text-gray-500 font-semibold tracking-wider mt-1 uppercase">
                       {t.label}
@@ -261,85 +298,101 @@ export default function RegisterPage() {
           )}
         </div>
 
-        {/* Main Split Grid (Form Left, Benefits Right) */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start mt-8">
-          {/* Left Side: Form Container */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="lg:col-span-2"
+          {/* Registration Form */}
+          <form
+            onSubmit={handleSubmit}
+            className="backdrop-blur-xl border rounded-2xl p-5 sm:p-8"
+            style={{
+              background: 'var(--glass-panel-bg)',
+              borderColor: 'var(--glass-panel-border)',
+              boxShadow: 'var(--glass-panel-shadow)',
+            }}
           >
-            <form
-              onSubmit={handleSubmit}
-              className="bg-[#111116]/90 backdrop-blur-xl border border-white/[0.07] rounded-2xl p-5 sm:p-8 shadow-[0_2px_12px_rgba(0,0,0,0.30)]"
-            >
-              <div className="space-y-5">
-                {/* Flat Success Banner styled exactly like the Create Account screenshot! */}
-                {isSuccess && (
-                  <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-center text-sm text-green-400 font-medium animate-in fade-in duration-300">
-                    Registration submitted successfully! You can continue
-                    browsing.
-                  </div>
-                )}
+            <div className="space-y-5">
+              {/* Team Name */}
+              <div>
+                <label
+                  htmlFor="teamName"
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: 'var(--text-heading)' }}
+                >
+                  Team Name *
+                </label>
+                <div className="relative">
+                  <Users className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--text-muted)' }} />
+                  <input
+                    type="text"
+                    id="teamName"
+                    name="teamName"
+                    required
+                    value={formData.teamName}
+                    onChange={handleChange}
+                    className="w-full bg-[var(--input-background)] border border-[var(--glass-panel-border)] rounded-lg px-12 py-3 text-[var(--text-heading)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[#588157] transition-all duration-300"
+                    style={{ fontSize: "16px" }}
+                    placeholder="Enter your team name"
+                  />
+                </div>
+              </div>
 
-                {/* Team Name */}
-                <div>
-                  <label
-                    htmlFor="teamName"
-                    className="block text-sm font-medium text-gray-300 mb-2"
-                  >
-                    Team Name *
-                  </label>
-                  <div className="relative">
-                    <Users className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                    <input
-                      type="text"
-                      id="teamName"
-                      name="teamName"
-                      required
-                      value={formData.teamName}
-                      onChange={handleChange}
-                      className="w-full bg-[#18181f] border border-white/[0.07] rounded-lg px-12 py-3 text-[#F5F5F0] placeholder:text-[#5A5A52] focus:outline-none focus:border-[#588157] transition-colors"
-                      style={{ fontSize: "16px" }}
-                      placeholder="Enter your team name"
-                    />
-                  </div>
+              {/* Institution */}
+              <div>
+                <label
+                  htmlFor="institution"
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: 'var(--text-heading)' }}
+                >
+                  Institution *
+                </label>
+                <div className="relative">
+                  <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--text-muted)' }} />
+                  <input
+                    type="text"
+                    id="institution"
+                    name="institution"
+                    required
+                    value={formData.institution}
+                    onChange={handleChange}
+                    className="w-full bg-[var(--input-background)] border border-[var(--glass-panel-border)] rounded-lg px-12 py-3 text-[var(--text-heading)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[#588157] transition-all duration-300"
+                    style={{ fontSize: "16px" }}
+                    placeholder="Enter your university/college name"
+                  />
                 </div>
 
-                {/* Institution */}
-                <div>
-                  <label
-                    htmlFor="institution"
-                    className="block text-sm font-medium text-gray-300 mb-2"
-                  >
-                    Institution *
-                  </label>
-                  <div className="relative">
-                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                    <input
-                      type="text"
-                      id="institution"
-                      name="institution"
-                      required
-                      value={formData.institution}
-                      onChange={handleChange}
-                      className="w-full bg-[#18181f] border border-white/[0.07] rounded-lg px-12 py-3 text-[#F5F5F0] placeholder:text-[#5A5A52] focus:outline-none focus:border-[#588157] transition-colors"
-                      style={{ fontSize: "16px" }}
-                      placeholder="Enter your university/college name"
-                    />
-                  </div>
+              {/* Team Leader */}
+              <div>
+                <label
+                  htmlFor="teamLeader"
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: 'var(--text-heading)' }}
+                >
+                  Team Leader Name *
+                </label>
+                <div className="relative">
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--text-muted)' }} />
+                  <input
+                    type="text"
+                    id="teamLeader"
+                    name="teamLeader"
+                    required
+                    value={formData.teamLeader}
+                    onChange={handleChange}
+                    className="w-full bg-[var(--input-background)] border border-[var(--glass-panel-border)] rounded-lg px-12 py-3 text-[var(--text-heading)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[#588157] transition-all duration-300"
+                    style={{ fontSize: "16px" }}
+                    placeholder="Enter team leader's full name"
+                  />
                 </div>
 
                 {/* Team Leader / Full Name */}
                 <div>
                   <label
-                    htmlFor="teamLeader"
-                    className="block text-sm font-medium text-gray-300 mb-2"
+                    htmlFor="email"
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: 'var(--text-heading)' }}
                   >
                     Full Name (Team Leader) *
                   </label>
                   <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--text-muted)' }} />
                     <input
                       type="text"
                       id="teamLeader"
@@ -347,7 +400,7 @@ export default function RegisterPage() {
                       required
                       value={formData.teamLeader}
                       onChange={handleChange}
-                      className="w-full bg-[#18181f] border border-white/[0.07] rounded-lg px-12 py-3 text-[#F5F5F0] placeholder:text-[#5A5A52] focus:outline-none focus:border-[#588157] transition-colors"
+                      className="w-full bg-[var(--input-background)] border border-[var(--glass-panel-border)] rounded-lg px-12 py-3 text-[var(--text-heading)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[#588157] transition-all duration-300"
                       style={{ fontSize: "16px" }}
                       placeholder="Enter your full name"
                     />
@@ -406,13 +459,14 @@ export default function RegisterPage() {
                 {/* Secure Password Field (Added!) */}
                 <div>
                   <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-gray-300 mb-2"
+                    htmlFor="phone"
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: 'var(--text-heading)' }}
                   >
                     Account Password * (Minimum 8 characters)
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--text-muted)' }} />
                     <input
                       type={showPassword ? "text" : "password"}
                       id="password"
@@ -420,7 +474,7 @@ export default function RegisterPage() {
                       required
                       value={formData.password}
                       onChange={handleChange}
-                      className="w-full bg-[#18181f] border border-white/[0.07] rounded-lg px-12 py-3 text-[#F5F5F0] placeholder:text-[#5A5A52] focus:outline-none focus:border-[#588157] transition-colors"
+                      className="w-full bg-[var(--input-background)] border border-[var(--glass-panel-border)] rounded-lg px-12 py-3 text-[var(--text-heading)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[#588157] transition-all duration-300"
                       style={{ fontSize: "16px" }}
                       placeholder="Choose a password for your portal"
                     />
@@ -434,99 +488,121 @@ export default function RegisterPage() {
                   </div>
                 </div>
 
-                {/* Number of Members */}
-                <div>
-                  <label
-                    htmlFor="members"
-                    className="block text-sm font-medium text-gray-300 mb-2"
-                  >
-                    Number of Team Members * (Between {eventDetails.minMembers}{" "}
-                    and {eventDetails.maxMembers})
-                  </label>
-                  <input
-                    type="number"
-                    id="members"
-                    name="members"
-                    required
-                    min={eventDetails.minMembers}
-                    max={eventDetails.maxMembers}
-                    value={formData.members}
-                    onChange={handleChange}
-                    className="w-full bg-[#18181f] border border-white/[0.07] rounded-lg px-4 py-3 text-[#F5F5F0] placeholder:text-[#5A5A52] focus:outline-none focus:border-[#588157] transition-colors"
-                    style={{ fontSize: "16px" }}
-                    placeholder={`e.g., ${eventDetails.maxMembers}`}
-                  />
-                </div>
+              {/* Number of Members */}
+              <div>
+                <label
+                  htmlFor="members"
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: 'var(--text-heading)' }}
+                >
+                  Number of Team Members * (Between {eventDetails.minMembers}{" "}
+                  and {eventDetails.maxMembers})
+                </label>
+                <input
+                  type="number"
+                  id="members"
+                  name="members"
+                  required
+                  min={eventDetails.minMembers}
+                  max={eventDetails.maxMembers}
+                  value={formData.members}
+                  onChange={handleChange}
+                  className="w-full bg-[var(--input-background)] border border-[var(--glass-panel-border)] rounded-lg px-4 py-3 text-[var(--text-heading)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[#588157] transition-all duration-300"
+                  style={{ fontSize: "16px" }}
+                  placeholder={`e.g., ${eventDetails.maxMembers}`}
+                />
+              </div>
 
-                {/* Segment Selection */}
-                <div>
-                  <label
-                    htmlFor="segment"
-                    className="block text-sm font-medium text-gray-300 mb-2"
-                  >
-                    Competition Segment *
-                  </label>
-                  <select
-                    id="segment"
-                    name="segment"
-                    required
-                    value={formData.segment}
-                    onChange={handleChange}
-                    className="w-full bg-[#18181f] border border-white/[0.07] rounded-lg px-4 py-3 text-[#F5F5F0] focus:outline-none focus:border-[#588157] transition-colors"
-                    style={{ fontSize: "16px" }}
-                  >
-                    <option value="" className="bg-[#18181f]">
-                      Select a segment
-                    </option>
-                    {dbSegments.map((seg) => (
+              {/* Segment Selection */}
+              <div>
+                <label
+                  htmlFor="segment"
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: 'var(--text-heading)' }}
+                >
+                  Competition Segment *
+                </label>
+                <select
+                  id="segment"
+                  name="segment"
+                  required
+                  value={formData.segment}
+                  onChange={handleChange}
+                  className="w-full bg-[var(--input-background)] border border-[var(--glass-panel-border)] rounded-lg px-4 py-3 text-[var(--text-heading)] focus:outline-none focus:border-[#588157] transition-all duration-300"
+                  style={{ fontSize: "16px" }}
+                >
+                  <option value="" className="bg-[var(--card)] text-[var(--text-heading)]">
+                    Select a segment
+                  </option>
+                  {dbSegments
+                    .filter((seg) => !seg.status || seg.status === "active")
+                    .map((seg) => (
                       <option
                         key={seg.id}
                         value={seg.name}
-                        className="bg-[#18181f]"
+                        className="bg-[var(--card)] text-[var(--text-heading)]"
                       >
                         {seg.name}
                       </option>
                     ))}
-                  </select>
-                </div>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full bg-[#3a5a40] text-white py-4 rounded-lg font-semibold hover:bg-[#344e41] transition-all hover:scale-[1.02] shadow-[0_2px_12px_rgba(0,0,0,0.20)] flex items-center justify-center gap-2 mt-6 disabled:opacity-75 disabled:cursor-not-allowed"
-                >
-                  {submitting ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <>
-                      Submit Registration & Create Account
-                      <ArrowRight className="w-5 h-5" />
-                    </>
-                  )}
-                </button>
+                </select>
               </div>
 
-              {/* Footer Note */}
-              <p className="text-sm text-[#5A5A52] mt-6 text-center">
-                Already registered?{" "}
-                <Link to="/login" className="text-[#588157] hover:underline">
-                  Login to your portal
-                </Link>
-              </p>
-            </form>
-          </motion.div>
+              {/* Password */}
+              <div>
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: 'var(--text-heading)' }}
+                >
+                  Password * (At least 8 characters)
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--text-muted)' }} />
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="w-full bg-[var(--input-background)] border border-[var(--glass-panel-border)] rounded-lg px-12 py-3 text-[var(--text-heading)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[#588157] transition-all duration-300"
+                    style={{ fontSize: "16px" }}
+                    placeholder="Enter your password"
+                  />
+                </div>
+              </div>
 
-          {/* Right Side: Benefits Section (Added!) */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="lg:col-span-1 space-y-6"
-          >
-            <div className="bg-[#111116]/90 border border-white/[0.07] rounded-2xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.30)] backdrop-blur-xl">
-              <h3
-                className="text-lg font-bold text-[#a3b18a] mb-4 flex items-center gap-2"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+              {/* Confirm Password */}
+              <div>
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: 'var(--text-heading)' }}
+                >
+                  Confirm Password *
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--text-muted)' }} />
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    required
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    className="w-full bg-[var(--input-background)] border border-[var(--glass-panel-border)] rounded-lg px-12 py-3 text-[var(--text-heading)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[#588157] transition-all duration-300"
+                    style={{ fontSize: "16px" }}
+                    placeholder="Confirm your password"
+                  />
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full bg-[#3a5a40] text-white py-4 rounded-lg font-semibold hover:bg-[#344e41] transition-all hover:scale-[1.02] shadow-[0_2px_12px_rgba(0,0,0,0.20)] flex items-center justify-center gap-2 mt-6 disabled:opacity-75 disabled:cursor-not-allowed"
               >
                 <ShieldCheck className="w-5 h-5 text-[#588157]" />
                 Participant Benefits
@@ -536,87 +612,17 @@ export default function RegisterPage() {
                 automatically be set up for you. Here's what you will get:
               </p>
 
-              <ul className="space-y-4">
-                <li className="flex gap-3">
-                  <div className="flex-shrink-0 mt-0.5">
-                    <Users className="w-4 h-4 text-[#588157]" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-gray-200">
-                      Personal Dashboard Access
-                    </h4>
-                    <p className="text-xs text-gray-400">
-                      View and manage your schedule, registered segments, and
-                      teammate list at any time.
-                    </p>
-                  </div>
-                </li>
+            {/* Footer Note */}
+            <p className="text-sm mt-6 text-center" style={{ color: 'var(--text-muted)' }}>
+              Already registered?{" "}
+              <Link to="/login" className="text-[#588157] hover:underline font-semibold">
+                Login here
+              </Link>
+            </p>
+          </form>
+        </motion.div>
 
-                <li className="flex gap-3">
-                  <div className="flex-shrink-0 mt-0.5">
-                    <Megaphone className="w-4 h-4 text-[#588157]" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-gray-200">
-                      Announcements & Updates
-                    </h4>
-                    <p className="text-xs text-gray-400">
-                      Get live, critical event updates and notices directly
-                      inside your participant portal.
-                    </p>
-                  </div>
-                </li>
-
-                <li className="flex gap-3">
-                  <div className="flex-shrink-0 mt-0.5">
-                    <Activity className="w-4 h-4 text-[#588157]" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-gray-200">
-                      Registration Tracking
-                    </h4>
-                    <p className="text-xs text-gray-400">
-                      Track real-time approval, rejection, and payment status
-                      updates on your submission.
-                    </p>
-                  </div>
-                </li>
-
-                <li className="flex gap-3">
-                  <div className="flex-shrink-0 mt-0.5">
-                    <QrCode className="w-4 h-4 text-[#588157]" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-gray-200">
-                      QR Pass Access
-                    </h4>
-                    <p className="text-xs text-gray-400">
-                      Retrieve your team's official entry QR pass immediately
-                      upon payment verification.
-                    </p>
-                  </div>
-                </li>
-
-                <li className="flex gap-3">
-                  <div className="flex-shrink-0 mt-0.5">
-                    <Award className="w-4 h-4 text-[#588157]" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-gray-200">
-                      Certificate Access
-                    </h4>
-                    <p className="text-xs text-gray-400">
-                      Download official university participation certificates
-                      directly from your portal when released.
-                    </p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </motion.div>
-        </div>
-
-        <div className="mt-8 text-center text-sm text-gray-500 flex items-center justify-center gap-2">
+        <div className="mt-8 text-center text-sm flex items-center justify-center gap-2" style={{ color: 'var(--text-muted)' }}>
           <ShieldCheck className="w-4 h-4" />
           <span>Secured by {eventDetails.eventName} Org</span>
         </div>
