@@ -431,15 +431,25 @@ export const Segments = ({ dbSegments }: { dbSegments?: SegmentData[] }) => {
                       <Trophy className="w-4 h-4 text-white" />
                     </div>
 
-                    {/* Icon Panel */}
+                    {/* Icon Panel or Image */}
                     <div
-                      className="rounded-2xl p-8 flex items-center justify-center text-[#588157] mb-4"
+                      className="rounded-2xl flex items-center justify-center text-[#588157] mb-4 relative overflow-hidden"
                       style={{
                         background: 'var(--border)',
                         border: '1px solid var(--glass-panel-border)',
+                        height: '120px',
                       }}
                     >
-                      {ICONS[segment.id % 6] || ICONS[1]}
+                      {segment.imageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img 
+                          src={segment.imageUrl} 
+                          alt={segment.name} 
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                      ) : (
+                        ICONS[segment.id % 6] || ICONS[1]
+                      )}
                     </div>
 
                     {/* Code Name */}
