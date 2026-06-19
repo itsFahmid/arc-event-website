@@ -3,119 +3,98 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Trophy, Target, Zap, Cpu, Code, Grid, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from '@/lib/router-compat';
+import { useSession } from 'next-auth/react';
 
-const segments = [
-  {
-    id: 1,
-    code: 'RO-01',
-    name: 'Robo Olympiad',
-    subtitle: 'Project Showcase & Innovation Display',
-    desc: 'Present your most innovative robotics project to industry experts and compete for top honors.',
-    icon: <Trophy className="w-16 h-16" />,
-    teamSize: '2-4 members',
-    entryFee: '$50',
-    prize: '$5,000',
-    rules: [
-      'Original design required with documentation',
-      'Live demonstration mandatory',
-      'Q&A session with judges',
-      'Must include working prototype'
-    ]
-  },
-  {
-    id: 2,
-    code: 'SB-02',
-    name: 'Soccer Bot',
-    subtitle: 'Strategic Gameplay & Autonomous Control',
-    desc: 'Design autonomous robots that compete in fast-paced soccer matches using advanced AI.',
-    icon: <Target className="w-16 h-16" />,
-    teamSize: '3-5 members',
-    entryFee: '$60',
-    prize: '$7,500',
-    rules: [
-      'Fully autonomous operation required',
-      'Maximum bot dimensions: 20cm x 20cm',
-      'Standard arena size: 4m x 6m',
-      'Round-robin tournament format'
-    ]
-  },
-  {
-    id: 3,
-    code: 'LF-03',
-    name: 'Line Following Robot',
-    subtitle: 'Speed, Precision & Algorithm Mastery',
-    desc: 'Navigate complex track patterns at maximum speed with flawless precision.',
-    icon: <Zap className="w-16 h-16" />,
-    teamSize: '1-3 members',
-    entryFee: '$40',
-    prize: '$3,000',
-    rules: [
-      'Time-based scoring system',
-      'Multiple track difficulty levels',
-      'Sensor limitations apply',
-      'Best of 3 runs counted'
-    ]
-  },
-  {
-    id: 4,
-    code: 'CW-04',
-    name: 'Circuit Wizard',
-    subtitle: 'Electronics Design & Problem Solving',
-    desc: 'Solve real-world circuit challenges and demonstrate advanced electronics expertise.',
-    icon: <Cpu className="w-16 h-16" />,
-    teamSize: '1-2 members',
-    entryFee: '$35',
-    prize: '$2,500',
-    rules: [
-      'Timed problem-solving rounds',
-      'PCB design submission required',
-      'Component efficiency scoring',
-      'Live troubleshooting challenge'
-    ]
-  },
-  {
-    id: 5,
-    code: 'RH-05',
-    name: 'Robo Hackathon',
-    subtitle: 'Code, Build & Deploy in 24hrs',
-    desc: 'Intense 24-hour challenge to design, build, and present a complete robotic solution.',
-    icon: <Code className="w-16 h-16" />,
-    teamSize: '2-4 members',
-    entryFee: '$70',
-    prize: '$10,000',
-    rules: [
-      '24-hour continuous development',
-      'Mentorship sessions available',
-      'Final pitch to judging panel',
-      'Open-source submission preferred'
-    ]
-  },
-  {
-    id: 6,
-    code: 'CD-06',
-    name: 'Cadyssey',
-    subtitle: 'Robotics Engineering & Design',
-    desc: 'Showcase exceptional CAD modeling skills and mechanical engineering prowess.',
-    icon: <Grid className="w-16 h-16" />,
-    teamSize: '1-3 members',
-    entryFee: '$45',
-    prize: '$4,000',
-    rules: [
-      'Detailed 3D models required',
-      'Assembly simulation mandatory',
-      'Bill of materials included',
-      'Design optimization challenge'
-    ]
-  }
+interface SegmentData {
+  id: number;
+  name: string;
+  description: string;
+  rules: string;
+  prizePool: string;
+  status: string;
+  imageUrl?: string;
+}
+
+const ICONS: { [key: number]: React.ReactNode } = {
+  1: <Trophy className="w-16 h-16" />,
+  2: <Target className="w-16 h-16" />,
+  3: <Zap className="w-16 h-16" />,
+  4: <Cpu className="w-16 h-16" />,
+  5: <Code className="w-16 h-16" />,
+  6: <Grid className="w-16 h-16" />,
+};
+
+const DUMMY_SEGMENTS: SegmentData[] = [
+  { id: 1, name: 'Robo Soccer', description: 'Build and program autonomous or manual robots to compete in a high-stakes soccer tournament on a custom arena.', rules: '1. Robots must fit within dimensions. 2. Manual control via wireless RF. 3. No damage to arena.', prizePool: '৳20,000', status: 'active', imageUrl: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80' },
+  { id: 2, name: 'Line Follower', description: 'Optimize your algorithms for the fastest time across complex track layouts with sharp turns and intersections.', rules: '1. Autonomous control only. 2. Max weight 1kg. 3. Time trial base scoring.', prizePool: '৳15,000', status: 'active', imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80' },
+  { id: 3, name: 'Drone Race', description: 'Navigate aerial obstacles in a high-speed FPV drone racing championship.', rules: '1. Quadcopter design only. 2. Safety nets active. 3. FPV video feed mandatory.', prizePool: '৳50,000', status: 'active', imageUrl: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=800&q=80' },
+  { id: 4, name: 'Sumo Bot', description: 'Push the opponent out of the ring. Pure torque and grip.', rules: '1. Auton/Manual options. 2. Ring size 1.5m diameter. 3. Weight limits apply.', prizePool: '৳25,000', status: 'active', imageUrl: 'https://images.unsplash.com/photo-1535378917042-10a22c95931a?w=800&q=80' }
 ];
 
-export const Segments = () => {
+export const Segments = ({ dbSegments }: { dbSegments?: SegmentData[] }) => {
+  const { data: session } = useSession();
+  const [registeredSegmentIds, setRegisteredSegmentIds] = useState<number[]>([]);
+  const [segments, setSegments] = useState<SegmentData[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== 'undefined' ? window.innerWidth : 1200
   );
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    if (session) {
+      fetch('/api/dashboard/summary')
+        .then((res) => {
+          if (res.ok) return res.json();
+          throw new Error('Failed to load registered segments');
+        })
+        .then((data) => {
+          if (data && Array.isArray(data.events)) {
+            const ids = data.events.map((e: any) => e.segmentId).filter(Boolean);
+            setRegisteredSegmentIds(ids);
+          }
+        })
+        .catch((err) => console.error('Error fetching segment registrations:', err));
+    }
+  }, [session]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Fetch segments from API
+  useEffect(() => {
+    if (dbSegments && dbSegments.length > 0) {
+      setSegments(dbSegments);
+      return;
+    }
+    if (mounted) {
+      fetchSegments();
+    }
+  }, [mounted, dbSegments]);
+
+  const fetchSegments = async () => {
+    try {
+      const response = await fetch('/api/segments');
+      if (response.ok) {
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          setSegments(data);
+        } else {
+          console.error('Expected array of segments, received:', data);
+          setSegments([]);
+        }
+      } else {
+        console.error('Failed to fetch segments, status:', response.status);
+        setSegments([]);
+      }
+    } catch (error) {
+      console.error('Failed to fetch segments:', error);
+      setSegments([]);
+    }
+  };
 
   useEffect(() => {
     const onResize = () => setWindowWidth(window.innerWidth);
@@ -124,14 +103,14 @@ export const Segments = () => {
   }, []);
 
   useEffect(() => {
-    if (!isPaused) {
+    if (!isPaused && segments.length > 0) {
       const interval = setInterval(() => {
         setCurrentIndex((prev) => (prev + 1) % segments.length);
         setFlippedIndex(null);
       }, 3000);
       return () => clearInterval(interval);
     }
-  }, [isPaused]);
+  }, [isPaused, segments.length]);
 
   const isMobile = windowWidth < 768;
   const isTablet = windowWidth >= 768 && windowWidth < 1200;
@@ -150,11 +129,11 @@ export const Segments = () => {
     >
       {/* ── Rich atmospheric background ── */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
-        {/* Deep dark green base */}
+        {/* Deep base background */}
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(160deg, #060d0a 0%, #0a110d 30%, #080e0b 60%, #050a07 100%)',
+            background: 'var(--section-gradient-base)',
           }}
         />
 
@@ -247,8 +226,9 @@ export const Segments = () => {
             <div className="h-px w-10 bg-[#588157] opacity-70" />
           </div>
           <h2
-            className="font-bold mb-4 text-[#a3b18a]"
+            className="font-bold mb-4"
             style={{
+              color: 'var(--text-heading)',
               fontFamily: "'Space Grotesk', sans-serif",
               fontSize: 'clamp(36px, 6vw, 64px)',
               letterSpacing: '-0.02em',
@@ -256,7 +236,7 @@ export const Segments = () => {
           >
             Competition Segments
           </h2>
-          <p className="text-[#7a8a72] text-lg max-w-[560px] mx-auto">
+          <p className="text-lg max-w-[560px] mx-auto" style={{ color: 'var(--text-body)' }}>
             Explore diverse tracks crafted to challenge your hardware, software and design skills.
           </p>
         </motion.div>
@@ -273,17 +253,11 @@ export const Segments = () => {
           maxWidth: '1160px',
           borderRadius: '28px',
           padding: '40px 24px 48px',
-          background: 'linear-gradient(145deg, rgba(18,32,22,0.55) 0%, rgba(10,18,13,0.45) 50%, rgba(14,26,18,0.50) 100%)',
+          background: 'var(--glass-panel-bg)',
           backdropFilter: 'blur(28px) saturate(160%)',
           WebkitBackdropFilter: 'blur(28px) saturate(160%)',
-          border: '1px solid rgba(120,180,120,0.18)',
-          boxShadow: `
-            0 0 80px rgba(58,130,80,0.12),
-            0 4px 6px rgba(0,0,0,0.3),
-            0 24px 64px rgba(0,0,0,0.5),
-            inset 0 1px 0 rgba(255,255,255,0.10),
-            inset 0 -1px 0 rgba(88,129,87,0.08)
-          `,
+          border: '1px solid var(--glass-panel-border)',
+          boxShadow: 'var(--glass-panel-shadow)',
         }}
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
@@ -311,16 +285,19 @@ export const Segments = () => {
         {/* Left Arrow */}
         <button
           onClick={() => {
+            if (segments.length === 0) return;
             setCurrentIndex((prev) => (prev - 1 + segments.length) % segments.length);
             setFlippedIndex(null);
           }}
-          className="absolute left-4 top-1/2 z-20 w-11 h-11 rounded-full flex items-center justify-center text-[#a3b18a] hover:scale-110 transition-all"
+          disabled={segments.length === 0}
+          className="absolute left-4 top-1/2 z-20 w-11 h-11 rounded-full flex items-center justify-center hover:scale-110 transition-all disabled:opacity-50 disabled:pointer-events-none"
           style={{
             transform: 'translateY(-50%)',
-            background: 'rgba(18,32,22,0.7)',
+            background: 'var(--arrow-bg)',
             backdropFilter: 'blur(12px)',
-            border: '1px solid rgba(88,129,87,0.4)',
-            boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
+            border: '1px solid var(--arrow-border)',
+            boxShadow: 'var(--arrow-shadow)',
+            color: 'var(--arrow-text)',
           }}
         >
           <ChevronLeft className="w-5 h-5" />
@@ -329,16 +306,19 @@ export const Segments = () => {
         {/* Right Arrow */}
         <button
           onClick={() => {
+            if (segments.length === 0) return;
             setCurrentIndex((prev) => (prev + 1) % segments.length);
             setFlippedIndex(null);
           }}
-          className="absolute right-4 top-1/2 z-20 w-11 h-11 rounded-full flex items-center justify-center text-[#a3b18a] hover:scale-110 transition-all"
+          disabled={segments.length === 0}
+          className="absolute right-4 top-1/2 z-20 w-11 h-11 rounded-full flex items-center justify-center hover:scale-110 transition-all disabled:opacity-50 disabled:pointer-events-none"
           style={{
             transform: 'translateY(-50%)',
-            background: 'rgba(18,32,22,0.7)',
+            background: 'var(--arrow-bg)',
             backdropFilter: 'blur(12px)',
-            border: '1px solid rgba(88,129,87,0.4)',
-            boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
+            border: '1px solid var(--arrow-border)',
+            boxShadow: 'var(--arrow-shadow)',
+            color: 'var(--arrow-text)',
           }}
         >
           <ChevronRight className="w-5 h-5" />
@@ -416,23 +396,11 @@ export const Segments = () => {
                   <motion.div
                     className="absolute inset-0 rounded-[24px] p-6 flex flex-col justify-between"
                     style={{
-                      background: isCenter
-                        ? 'linear-gradient(145deg, rgba(22,42,28,0.65) 0%, rgba(12,22,16,0.55) 50%, rgba(18,34,22,0.60) 100%)'
-                        : 'linear-gradient(145deg, rgba(18,32,22,0.50) 0%, rgba(10,18,13,0.42) 100%)',
+                      background: 'var(--glass-panel-bg)',
                       backdropFilter: isCenter ? 'blur(28px) saturate(200%)' : 'blur(18px) saturate(160%)',
                       WebkitBackdropFilter: isCenter ? 'blur(28px) saturate(200%)' : 'blur(18px) saturate(160%)',
-                      border: isCenter
-                        ? '1px solid rgba(140,200,140,0.22)'
-                        : '1px solid rgba(100,160,100,0.12)',
-                      boxShadow: isCenter
-                        ? `
-                          0 0 50px rgba(58,130,80,0.18),
-                          0 2px 4px rgba(0,0,0,0.2),
-                          0 16px 40px rgba(0,0,0,0.45),
-                          inset 0 1px 0 rgba(255,255,255,0.14),
-                          inset 0 0 30px rgba(88,160,88,0.05)
-                        `
-                        : '0 8px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.07)',
+                      border: '1px solid var(--glass-panel-border)',
+                      boxShadow: 'var(--glass-panel-shadow)',
                       backfaceVisibility: 'hidden',
                       transform: 'rotateY(0deg)',
                     }}
@@ -463,30 +431,40 @@ export const Segments = () => {
                       <Trophy className="w-4 h-4 text-white" />
                     </div>
 
-                    {/* Icon Panel */}
+                    {/* Icon Panel or Image */}
                     <div
-                      className="rounded-2xl p-8 flex items-center justify-center text-[#6aaf6a] mb-4"
+                      className="rounded-2xl flex items-center justify-center text-[#588157] mb-4 relative overflow-hidden"
                       style={{
-                        background: 'rgba(88,160,88,0.08)',
-                        border: '1px solid rgba(88,160,88,0.12)',
+                        background: 'var(--border)',
+                        border: '1px solid var(--glass-panel-border)',
+                        height: '120px',
                       }}
                     >
-                      {segment.icon}
+                      {segment.imageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img 
+                          src={segment.imageUrl} 
+                          alt={segment.name} 
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                      ) : (
+                        ICONS[segment.id % 6] || ICONS[1]
+                      )}
                     </div>
 
                     {/* Code Name */}
                     <div className="text-center mb-3">
-                      <span className="text-xs text-[#4a6a4a] font-mono tracking-wider">{segment.code}</span>
+                      <span className="text-xs font-mono tracking-wider" style={{ color: 'var(--text-muted)' }}>SEG-{String(segment.id).padStart(2, '0')}</span>
                     </div>
 
                     {/* Click to Flip */}
                     {isCenter && (
                       <div className="flex justify-center mb-4">
                         <div
-                          className="px-4 py-1.5 rounded-full text-xs text-[#a3b18a] font-medium"
+                          className="px-4 py-1.5 rounded-full text-xs font-medium"
                           style={{
-                            background: 'rgba(88,129,87,0.12)',
-                            border: '1px solid rgba(163,177,138,0.30)',
+                            background: 'var(--border)',
+                            color: 'var(--text-body)',
                           }}
                         >
                           Click to flip
@@ -497,12 +475,12 @@ export const Segments = () => {
                     {/* Segment Name */}
                     <div className="text-center">
                       <h3
-                        className="text-2xl font-bold mb-2 text-[#d4e8c2]"
-                        style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                        className="text-2xl font-bold mb-2"
+                        style={{ color: 'var(--text-heading)', fontFamily: "'Space Grotesk', sans-serif" }}
                       >
                         {segment.name}
                       </h3>
-                      <p className="text-sm text-[#5a7a5a]">{segment.subtitle}</p>
+                      <p className="text-sm" style={{ color: 'var(--text-body)' }}>{segment.description.substring(0, 50)}...</p>
                     </div>
                   </motion.div>
 
@@ -510,15 +488,11 @@ export const Segments = () => {
                   <motion.div
                     className="absolute inset-0 rounded-[24px] p-6"
                     style={{
-                      background: 'linear-gradient(145deg, rgba(22,42,28,0.65) 0%, rgba(12,22,16,0.55) 50%, rgba(18,34,22,0.60) 100%)',
+                      background: 'var(--glass-panel-bg)',
                       backdropFilter: 'blur(28px) saturate(200%)',
                       WebkitBackdropFilter: 'blur(28px) saturate(200%)',
-                      border: '1px solid rgba(140,200,140,0.22)',
-                      boxShadow: `
-                        0 0 50px rgba(58,130,80,0.18),
-                        0 16px 40px rgba(0,0,0,0.45),
-                        inset 0 1px 0 rgba(255,255,255,0.14)
-                      `,
+                      border: '1px solid var(--glass-panel-border)',
+                      boxShadow: 'var(--glass-panel-shadow)',
                       backfaceVisibility: 'hidden',
                       transform: 'rotateY(180deg)',
                     }}
@@ -529,66 +503,72 @@ export const Segments = () => {
                       style={{
                         width: '65%',
                         height: '1px',
-                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), rgba(180,255,180,0.18), transparent)',
+                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
                       }}
                     />
 
                     <h3
-                      className="text-xl font-bold mb-6 text-center text-[#d4e8c2]"
-                      style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                      className="text-xl font-bold mb-6 text-center"
+                      style={{ color: 'var(--text-heading)', fontFamily: "'Space Grotesk', sans-serif" }}
                     >
                       {segment.name}
                     </h3>
 
                     <div className="space-y-3 mb-6">
                       <div className="flex justify-between text-sm">
-                        <span className="text-[#5a7a5a]">Team Size:</span>
-                        <span className="text-[#c8ddb0] font-medium">{segment.teamSize}</span>
+                        <span style={{ color: 'var(--text-muted)' }}>Prize Pool:</span>
+                        <span className="font-bold" style={{ color: 'var(--text-heading)' }}>{segment.prizePool}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-[#5a7a5a]">Entry Fee:</span>
-                        <span className="text-[#c8ddb0] font-medium">{segment.entryFee}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-[#5a7a5a]">Prize Pool:</span>
-                        <span className="text-[#a3b18a] font-bold">{segment.prize}</span>
+                        <span style={{ color: 'var(--text-muted)' }}>Status:</span>
+                        <span className="font-medium capitalize" style={{ color: 'var(--text-heading)' }}>{segment.status}</span>
                       </div>
                     </div>
 
-                    <div className="h-px mb-4" style={{ background: 'rgba(88,160,88,0.15)' }} />
+                    <div className="h-px mb-4" style={{ background: 'var(--border)' }} />
 
-                    <div className="mb-6">
-                      <p className="text-xs text-[#4a6a4a] uppercase tracking-wider mb-3">Key Rules:</p>
-                      <ul className="space-y-2">
-                        {segment.rules.map((rule, i) => (
-                          <li key={i} className="text-xs text-[#6a8a6a] flex items-start gap-2">
-                            <span className="text-[#6aaf6a] mt-0.5">•</span>
-                            <span>{rule}</span>
-                          </li>
-                        ))}
-                      </ul>
+                    <div className="mb-4 text-left">
+                      <p className="text-xs uppercase tracking-wider mb-2" style={{ color: 'var(--text-body)' }}>Description:</p>
+                      <p className="text-xs leading-relaxed" style={{ color: 'var(--text-body)' }}>{segment.description}</p>
                     </div>
 
-                    <div className="space-y-2 mt-auto">
-                      <button
-                        className="w-full py-2 rounded-full text-sm text-[#a3b18a] hover:text-white transition-colors"
+                    <div className="mb-4 text-left">
+                      <p className="text-xs uppercase tracking-wider mb-1" style={{ color: 'var(--text-body)' }}>Rules & Requirements:</p>
+                      <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>{segment.rules || 'No rules specified'}</p>
+                    </div>
+
+                    <div className="space-y-2 mt-auto" onClick={(e) => e.stopPropagation()}>
+                      <Link
+                        to={`/event/${segment.id}`}
+                        className="w-full py-2 rounded-full text-sm font-semibold transition-colors text-center block"
                         style={{
-                          background: 'rgba(88,129,87,0.10)',
-                          border: '1px solid rgba(120,180,120,0.25)',
+                          background: 'var(--border)',
+                          color: 'var(--text-body)',
+                          border: '1px solid var(--glass-panel-border)',
                         }}
                       >
-                        View Full Rules
-                      </button>
-                      <button
-                        className="w-full py-2 rounded-full text-white text-sm font-semibold transition-all hover:brightness-110"
-                        style={{
-                          background: 'linear-gradient(135deg, rgba(58,90,64,0.9) 0%, rgba(88,129,87,0.85) 100%)',
-                          border: '1px solid rgba(140,200,140,0.30)',
-                          boxShadow: '0 4px 16px rgba(58,130,80,0.25), inset 0 1px 0 rgba(255,255,255,0.10)',
-                        }}
-                      >
-                        Register Now
-                      </button>
+                        View Details
+                      </Link>
+                      {registeredSegmentIds.includes(segment.id) ? (
+                        <button
+                          disabled
+                          className="w-full py-2 rounded-full text-sm font-semibold cursor-not-allowed opacity-60 text-center block"
+                          style={{
+                            background: 'var(--border)',
+                            color: 'var(--text-muted)',
+                            border: '1px solid var(--glass-panel-border)',
+                          }}
+                        >
+                          Already Registered
+                        </button>
+                      ) : (
+                        <Link
+                          to="/register"
+                          className="w-full py-2 rounded-full text-white text-sm font-semibold transition-all hover:brightness-110 text-center block bg-[#3a5a40] hover:bg-[#344e41] shadow-md"
+                        >
+                          Register Now
+                        </Link>
+                      )}
                     </div>
                   </motion.div>
                 </div>
@@ -632,12 +612,12 @@ export const Segments = () => {
           to="/segments"
           className="px-8 py-4 rounded-full font-bold transition-all hover:scale-105 hover:brightness-110"
           style={{
-            background: 'linear-gradient(135deg, rgba(22,42,28,0.70) 0%, rgba(18,34,22,0.60) 100%)',
+            background: 'var(--primary)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid rgba(140,200,140,0.22)',
-            color: '#a3b18a',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.3), 0 0 20px rgba(58,130,80,0.10), inset 0 1px 0 rgba(255,255,255,0.10)',
+            border: '1px solid var(--glass-panel-border)',
+            color: 'var(--primary-foreground)',
+            boxShadow: 'var(--glass-panel-shadow)',
           }}
         >
           Explore the Segments

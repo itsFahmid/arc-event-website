@@ -4,25 +4,37 @@ import { Ticker } from '@/components/Ticker';
 import { Segments } from '@/components/Segments';
 import { About } from '@/components/About';
 import { PrizePool } from '@/components/PrizePool';
-import { Sponsors } from '@/components/Sponsors';
+import { SponsorsCarousel } from '@/components/SponsorsCarousel';
 import { Highlights } from '@/components/Highlights';
 import { Testimonials } from '@/components/Testimonials';
 import { CTABanner } from '@/components/CTABanner';
 import { FAQ } from '@/components/FAQ';
 
-export default function Home() {
+export default function Home({
+  dbSegments,
+  dbSponsors,
+  dbFAQs,
+  dbPhotos,
+  dbReviews,
+}: {
+  dbSegments?: any[];
+  dbSponsors?: any;
+  dbFAQs?: any[];
+  dbPhotos?: string[];
+  dbReviews?: any[];
+}) {
   return (
     <>
       <Hero />
       <Ticker />
-      <Segments />
+      <Segments dbSegments={dbSegments} />
       <About />
       <PrizePool />
-      <Sponsors />
-      <Highlights />
-      <Testimonials />
+      <SponsorsCarousel />
+      <Highlights dbPhotos={dbPhotos} />
+      <Testimonials dbTestimonials={dbReviews} />
       <CTABanner />
-      <FAQ />
+      <FAQ dbFAQs={dbFAQs} />
     </>
   );
 }

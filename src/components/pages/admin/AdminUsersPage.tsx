@@ -295,7 +295,7 @@ export default function AdminUsersPage() {
             className={`text-3xl font-bold ${textColor} mb-2`}
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
-            Users & Teams
+            Users &amp; Teams
           </h1>
 
           <p className={`${mutedText} text-lg`}>
@@ -433,7 +433,7 @@ export default function AdminUsersPage() {
                   } text-sm uppercase tracking-wider ${mutedText}`}
               >
                 <th className="w-[28%] p-4 font-medium">Participant</th>
-                <th className="w-[28%] p-4 font-medium">Team & Segment</th>
+                <th className="w-[28%] p-4 font-medium">Team &amp; Segment</th>
                 <th className="w-[16%] p-4 font-medium">Role</th>
                 <th className="w-[16%] p-4 font-medium">Status</th>
                 <th className="w-[12%] p-4 font-medium text-right">Actions</th>

@@ -14,12 +14,12 @@ model User {
   passwordHash  String?
   role          String         @default("user")
   avatarUrl     String?
+  phone         String?
+  university    String?
+  department    String?
+  studentId     String?
   createdAt     DateTime       @default(now())
   emailVerified DateTime?
-  department    String?
-  phone         String?
-  studentId     String?
-  university    String?
   accounts      Account[]
   certificates  Certificate[]
   leaderboard   Leaderboard[]
@@ -152,8 +152,6 @@ model Leaderboard {
   segmentId Int?
   Segment   Segment? @relation(fields: [segmentId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, segmentId])
 }
 
 model Setting {

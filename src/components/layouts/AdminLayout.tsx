@@ -54,7 +54,11 @@ export const AdminLayout = () => {
       style={{ fontFamily: "'Inter', sans-serif" }}
     >
       {/* Top Navbar - Only visible on mobile/tablet */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-[#0A0A0F] border-b border-white/[0.06] z-50 flex items-center px-4">
+      <div className={`lg:hidden fixed top-0 left-0 right-0 h-16 border-b z-50 flex items-center px-4 transition-colors duration-300 ${
+        isDark 
+          ? 'bg-[#0d0d12]/95 border-white/[0.06] text-white' 
+          : 'bg-white/95 border-black/[0.06] text-[#1a1a14]'
+      }`}>
         <div className="md:hidden">
           <AnimatedMenuButton
             isOpen={isMobileMenuOpen}
@@ -64,7 +68,7 @@ export const AdminLayout = () => {
 
         <div className="ml-4">
           <h1
-            className="text-lg font-bold tracking-tight text-white leading-tight"
+            className={`text-lg font-bold tracking-tight leading-tight ${isDark ? 'text-white' : 'text-[#1a1a14]'}`}
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
             <span className="text-[#588157]">Robo</span>Fest{" "}

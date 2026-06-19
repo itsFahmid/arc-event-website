@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, Link } from '@/lib/router-compat';
 import { motion, AnimatePresence } from 'motion/react';
-import { LayoutDashboard, Calendar, Trophy, Award, QrCode, User, LogOut, Home, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Calendar, Trophy, Award, QrCode, User, LogOut, Home, Sun, Moon, Loader2 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { AnimatedMenuButton } from '@/components/AnimatedMenuButton';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 
 const menuItems = [
   { name: 'Overview', path: '/dashboard', icon: LayoutDashboard },
@@ -19,6 +19,12 @@ const menuItems = [
 export const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+  const { status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      window.location.href = '/login?callbackUrl=/dashboard';
+    },
+  });
   const isDark = theme === 'dark' || !theme;
 
   // Close sidebar on route change (mobile)
@@ -32,19 +38,30 @@ export const DashboardLayout = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  if (status === 'loading') {
+    return (
+      <div className={`min-h-screen flex flex-col items-center justify-center gap-4 ${isDark ? 'bg-[#0A0A0F]' : 'bg-[#f5f5f0]'}`}>
+        <Loader2 className="w-10 h-10 animate-spin text-[#588157]" />
+        <p className={isDark ? 'text-[#9A9A8E]' : 'text-[#8a8a7a]'}>Checking your session...</p>
+      </div>
+    );
+  }
+
   return (
     <div className={`min-h-screen ${isDark ? 'bg-[#0A0A0F]' : 'bg-[#f5f5f0]'}`}>
       {/* Top Navbar - Only visible on mobile/tablet */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-[#0A0A0F] border-b border-white/[0.06] z-50 flex items-center px-4">
+      <div className={`lg:hidden fixed top-0 left-0 right-0 h-16 border-b z-50 flex items-center px-4 transition-colors duration-300 ${
+        isDark ? 'bg-[#0A0A0F] border-white/[0.06]' : 'bg-[#ffffff] border-black/[0.06]'
+      }`}>
         <AnimatedMenuButton isOpen={sidebarOpen} onClick={() => setSidebarOpen(!sidebarOpen)} />
         <div className="ml-4">
           <h1
-            className="text-lg font-bold tracking-tight text-white leading-tight"
+            className={`text-lg font-bold tracking-tight leading-tight ${isDark ? 'text-white' : 'text-[#1a1a14]'}`}
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
             <span className="text-[#588157]">Robo</span>Fest
           </h1>
-          <p className="text-[10px] text-[#5A5A52]">Participant Dashboard</p>
+          <p className={`text-[10px] ${isDark ? 'text-[#5A5A52]' : 'text-[#8a8a7a]'}`}>Participant Dashboard</p>
         </div>
       </div>
 
