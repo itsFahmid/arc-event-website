@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Trophy, Target, Zap, Cpu, Code, Grid, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Trophy, Target, Zap, Cpu, Code, Grid, ChevronLeft, ChevronRight, Clock, MapPin } from 'lucide-react';
 import { Link } from '@/lib/router-compat';
 import { useSession } from 'next-auth/react';
 
@@ -13,6 +13,14 @@ interface SegmentData {
   prizePool: string;
   status: string;
   imageUrl?: string;
+  category?: string;
+  type?: string;
+  difficulty?: string;
+  teamSize?: string;
+  fee?: string;
+  deadline?: string;
+  location?: string;
+  scheduleText?: string;
 }
 
 const ICONS: { [key: number]: React.ReactNode } = {
@@ -25,10 +33,74 @@ const ICONS: { [key: number]: React.ReactNode } = {
 };
 
 const DUMMY_SEGMENTS: SegmentData[] = [
-  { id: 1, name: 'Robo Soccer', description: 'Build and program autonomous or manual robots to compete in a high-stakes soccer tournament on a custom arena.', rules: '1. Robots must fit within dimensions. 2. Manual control via wireless RF. 3. No damage to arena.', prizePool: '৳20,000', status: 'active', imageUrl: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80' },
-  { id: 2, name: 'Line Follower', description: 'Optimize your algorithms for the fastest time across complex track layouts with sharp turns and intersections.', rules: '1. Autonomous control only. 2. Max weight 1kg. 3. Time trial base scoring.', prizePool: '৳15,000', status: 'active', imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80' },
-  { id: 3, name: 'Drone Race', description: 'Navigate aerial obstacles in a high-speed FPV drone racing championship.', rules: '1. Quadcopter design only. 2. Safety nets active. 3. FPV video feed mandatory.', prizePool: '৳50,000', status: 'active', imageUrl: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=800&q=80' },
-  { id: 4, name: 'Sumo Bot', description: 'Push the opponent out of the ring. Pure torque and grip.', rules: '1. Auton/Manual options. 2. Ring size 1.5m diameter. 3. Weight limits apply.', prizePool: '৳25,000', status: 'active', imageUrl: 'https://images.unsplash.com/photo-1535378917042-10a22c95931a?w=800&q=80' }
+  { 
+    id: 1, 
+    name: 'Robo Soccer', 
+    description: 'Build and program autonomous or manual robots to compete in a high-stakes soccer tournament on a custom arena.', 
+    rules: '1. Robots must fit within dimensions. 2. Manual control via wireless RF. 3. No damage to arena.', 
+    prizePool: '৳20,000', 
+    status: 'active', 
+    imageUrl: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80',
+    category: 'Manual',
+    type: 'Team',
+    difficulty: 'Hard',
+    teamSize: 'Max 4 members',
+    fee: '৳500',
+    deadline: 'May 15, 2026',
+    location: 'Arena A, Main Hall',
+    scheduleText: 'Day 1 • 10:00 AM'
+  },
+  { 
+    id: 2, 
+    name: 'Line Follower', 
+    description: 'Optimize your algorithms for the fastest time across complex track layouts with sharp turns and intersections.', 
+    rules: '1. Autonomous control only. 2. Max weight 1kg. 3. Time trial base scoring.', 
+    prizePool: '৳15,000', 
+    status: 'active', 
+    imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80',
+    category: 'Autonomous',
+    type: 'Team',
+    difficulty: 'Medium',
+    teamSize: 'Max 3 members',
+    fee: '৳400',
+    deadline: 'May 12, 2026',
+    location: 'Track B, Engineering Wing',
+    scheduleText: 'Day 1 • 2:00 PM'
+  },
+  { 
+    id: 3, 
+    name: 'Drone Race', 
+    description: 'Navigate aerial obstacles in a high-speed FPV drone racing championship.', 
+    rules: '1. Quadcopter design only. 2. Safety nets active. 3. FPV video feed mandatory.', 
+    prizePool: '৳50,000', 
+    status: 'active', 
+    imageUrl: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=800&q=80',
+    category: 'Manual',
+    type: 'Solo',
+    difficulty: 'Extreme',
+    teamSize: 'Solo (Max 1)',
+    fee: '৳1000',
+    deadline: 'May 10, 2026',
+    location: 'Sky Zone, Outdoor Arena',
+    scheduleText: 'Day 2 • 11:00 AM'
+  },
+  { 
+    id: 4, 
+    name: 'Sumo Bot', 
+    description: 'Push the opponent out of the ring. Pure torque and grip.', 
+    rules: '1. Auton/Manual options. 2. Ring size 1.5m diameter. 3. Weight limits apply.', 
+    prizePool: '৳25,000', 
+    status: 'active', 
+    imageUrl: 'https://images.unsplash.com/photo-1535378917042-10a22c95931a?w=800&q=80',
+    category: 'Autonomous',
+    type: 'Team',
+    difficulty: 'Hard',
+    teamSize: 'Max 4 members',
+    fee: '৳600',
+    deadline: 'May 14, 2026',
+    location: 'Ring C, Arena Hall',
+    scheduleText: 'Day 1 • 4:00 PM'
+  }
 ];
 
 export const Segments = ({ dbSegments }: { dbSegments?: SegmentData[] }) => {
@@ -380,21 +452,24 @@ export const Segments = ({ dbSegments }: { dbSegments?: SegmentData[] }) => {
                 style={{
                   zIndex,
                   pointerEvents: isCenter ? 'auto' : 'none',
-                  filter: `blur(${blur}px)`,
+                  filter: blur > 0 ? `blur(${blur}px)` : undefined,
                   transition: 'filter 0.4s ease',
+                  transformStyle: 'preserve-3d',
                 }}
-                initial={{ scale, opacity, x: translateX, rotateY: isFlipped ? rotateY + 180 : rotateY }}
-                animate={{ scale, opacity, x: translateX, rotateY: isFlipped ? rotateY + 180 : rotateY }}
+                initial={{ scale, opacity, x: translateX, rotateY }}
+                animate={{ scale, opacity, x: translateX, rotateY }}
                 transition={{ type: 'spring', stiffness: 260, damping: 20 }}
               >
-                <div
+                <motion.div
                   className={`relative ${cardW} ${cardH} cursor-pointer`}
                   style={{ transformStyle: 'preserve-3d' }}
+                  animate={{ rotateY: isFlipped ? 180 : 0 }}
+                  transition={{ type: 'spring', stiffness: 200, damping: 20 }}
                   onClick={() => { if (isCenter) setFlippedIndex(isFlipped ? null : index); }}
                 >
-                  {/* ── Front Face — Premium Frosted Glass Card ── */}
+                  {/* ── Front Face — Premium Image Card ── */}
                   <motion.div
-                    className="absolute inset-0 rounded-[24px] p-6 flex flex-col justify-between"
+                    className="absolute inset-0 rounded-[24px] overflow-hidden p-6 flex flex-col justify-between"
                     style={{
                       background: 'var(--glass-panel-bg)',
                       backdropFilter: isCenter ? 'blur(28px) saturate(200%)' : 'blur(18px) saturate(160%)',
@@ -405,82 +480,58 @@ export const Segments = ({ dbSegments }: { dbSegments?: SegmentData[] }) => {
                       transform: 'rotateY(0deg)',
                     }}
                   >
-                    {/* Top inner highlight */}
-                    <div
-                      className="absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none rounded-full"
-                      style={{
-                        width: '65%',
-                        height: '1px',
-                        background: isCenter
-                          ? 'linear-gradient(90deg, transparent, rgba(255,255,255,0.30), rgba(180,255,180,0.20), transparent)'
-                          : 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
-                      }}
-                    />
-                    {/* Subtle inner corner glow */}
-                    {isCenter && (
-                      <div
-                        className="absolute inset-0 rounded-[24px] pointer-events-none"
-                        style={{
-                          background: 'radial-gradient(ellipse at 50% 0%, rgba(88,180,100,0.08) 0%, transparent 55%)',
-                        }}
-                      />
-                    )}
-
-                    {/* Trophy Badge */}
-                    <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center shadow-lg">
-                      <Trophy className="w-4 h-4 text-white" />
-                    </div>
-
-                    {/* Icon Panel or Image */}
-                    <div
-                      className="rounded-2xl flex items-center justify-center text-[#588157] mb-4 relative overflow-hidden"
-                      style={{
-                        background: 'var(--border)',
-                        border: '1px solid var(--glass-panel-border)',
-                        height: '120px',
-                      }}
-                    >
-                      {segment.imageUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
+                    {segment.imageUrl ? (
+                      <div className="absolute inset-0 z-0">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img 
                           src={segment.imageUrl} 
-                          alt={segment.name} 
-                          className="absolute inset-0 w-full h-full object-cover"
+                          alt={segment.name}
+                          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                         />
-                      ) : (
-                        ICONS[segment.id % 6] || ICONS[1]
-                      )}
-                    </div>
-
-                    {/* Code Name */}
-                    <div className="text-center mb-3">
-                      <span className="text-xs font-mono tracking-wider" style={{ color: 'var(--text-muted)' }}>SEG-{String(segment.id).padStart(2, '0')}</span>
-                    </div>
-
-                    {/* Click to Flip */}
-                    {isCenter && (
-                      <div className="flex justify-center mb-4">
-                        <div
-                          className="px-4 py-1.5 rounded-full text-xs font-medium"
-                          style={{
-                            background: 'var(--border)',
-                            color: 'var(--text-body)',
-                          }}
-                        >
-                          Click to flip
-                        </div>
+                        {/* Premium gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/20" />
                       </div>
+                    ) : (
+                      /* Fallback premium gradient background */
+                      <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#1b4332] via-[#081c15] to-[#111116]" />
                     )}
 
-                    {/* Segment Name */}
-                    <div className="text-center">
-                      <h3
-                        className="text-2xl font-bold mb-2"
-                        style={{ color: 'var(--text-heading)', fontFamily: "'Space Grotesk', sans-serif" }}
-                      >
-                        {segment.name}
-                      </h3>
-                      <p className="text-sm" style={{ color: 'var(--text-body)' }}>{segment.description.substring(0, 50)}...</p>
+                    {/* Content container overlaying the image */}
+                    <div className="relative z-10 flex flex-col justify-between h-full w-full pointer-events-none">
+                      {/* Top Row: Code Name & Trophy Badge */}
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-mono tracking-wider text-white/80 bg-black/40 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10">
+                          SEG-{String(segment.id).padStart(2, '0')}
+                        </span>
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center shadow-lg">
+                          <Trophy className="w-4 h-4 text-white" />
+                        </div>
+                      </div>
+
+                      {/* Middle: Floating category icon */}
+                      <div className="flex justify-center items-center my-auto">
+                        <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-[#a3b18a] bg-black/40 backdrop-blur-md border border-white/10 shadow-xl">
+                          {ICONS[segment.id % 6] || ICONS[1]}
+                        </div>
+                      </div>
+
+                      {/* Bottom Row: Name and Click to Flip helper */}
+                      <div className="text-center">
+                        {isCenter && (
+                          <div className="flex justify-center mb-2.5">
+                            <span className="px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase bg-white/15 text-white backdrop-blur-md border border-white/20 animate-pulse">
+                              Click to flip
+                            </span>
+                          </div>
+                        )}
+                        <h3
+                          className="text-2xl font-bold text-white mb-1 drop-shadow-md"
+                          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                        >
+                          {segment.name}
+                        </h3>
+                        <p className="text-xs text-white/70 line-clamp-1">{segment.description}</p>
+                      </div>
                     </div>
                   </motion.div>
 
@@ -497,81 +548,111 @@ export const Segments = ({ dbSegments }: { dbSegments?: SegmentData[] }) => {
                       transform: 'rotateY(180deg)',
                     }}
                   >
-                    {/* Top highlight */}
-                    <div
-                      className="absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none"
-                      style={{
-                        width: '65%',
-                        height: '1px',
-                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
-                      }}
-                    />
-
-                    <h3
-                      className="text-xl font-bold mb-6 text-center"
-                      style={{ color: 'var(--text-heading)', fontFamily: "'Space Grotesk', sans-serif" }}
-                    >
-                      {segment.name}
-                    </h3>
-
-                    <div className="space-y-3 mb-6">
-                      <div className="flex justify-between text-sm">
-                        <span style={{ color: 'var(--text-muted)' }}>Prize Pool:</span>
-                        <span className="font-bold" style={{ color: 'var(--text-heading)' }}>{segment.prizePool}</span>
+                    <div className="flex flex-col justify-between h-full">
+                      {/* Header */}
+                      <div className="text-center">
+                        <h3
+                          className="text-lg md:text-xl font-bold"
+                          style={{ color: 'var(--text-heading)', fontFamily: "'Space Grotesk', sans-serif" }}
+                        >
+                          {segment.name}
+                        </h3>
+                        <p className="text-[11px] md:text-xs leading-relaxed mt-1 md:mt-2 text-center" style={{ color: 'var(--text-body)' }}>
+                          {segment.description.length > 90 ? `${segment.description.substring(0, 90)}...` : segment.description}
+                        </p>
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <span style={{ color: 'var(--text-muted)' }}>Status:</span>
-                        <span className="font-medium capitalize" style={{ color: 'var(--text-heading)' }}>{segment.status}</span>
+
+                      <div className="h-px my-2 md:my-3" style={{ background: 'var(--border)' }} />
+
+                      {/* Information Grid */}
+                      <div className="space-y-1.5 md:space-y-2 text-[11px] md:text-xs">
+                        {/* Date & Time */}
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-3.5 h-3.5 text-[#588157] shrink-0" />
+                          <span style={{ color: 'var(--text-muted)' }} className="shrink-0">Schedule:</span>
+                          <span className="font-semibold truncate ml-auto" style={{ color: 'var(--text-heading)' }}>
+                            {segment.scheduleText || 'TBA'}
+                          </span>
+                        </div>
+
+                        {/* Venue */}
+                        <div className="flex items-center gap-2">
+                          <MapPin className="w-3.5 h-3.5 text-[#588157] shrink-0" />
+                          <span style={{ color: 'var(--text-muted)' }} className="shrink-0">Venue:</span>
+                          <span className="font-semibold truncate ml-auto" style={{ color: 'var(--text-heading)' }}>
+                            {segment.location || 'TBA'}
+                          </span>
+                        </div>
+
+                        {/* Prize Pool */}
+                        <div className="flex items-center gap-2">
+                          <Trophy className="w-3.5 h-3.5 text-[#588157] shrink-0" />
+                          <span style={{ color: 'var(--text-muted)' }} className="shrink-0">Prize Pool:</span>
+                          <span className="font-bold text-[#588157] ml-auto">
+                            {segment.prizePool}
+                          </span>
+                        </div>
+
+                        {/* Additional Details Grid */}
+                        <div className="grid grid-cols-2 gap-x-2 gap-y-1 pt-1.5 border-t border-dashed border-white/10 mt-1 md:mt-2">
+                          <div>
+                            <span className="block text-[9px] md:text-[10px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Type</span>
+                            <span className="font-medium text-[10px] md:text-xs" style={{ color: 'var(--text-heading)' }}>{segment.type || 'TBA'}</span>
+                          </div>
+                          <div>
+                            <span className="block text-[9px] md:text-[10px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Difficulty</span>
+                            <span className="font-medium text-[10px] md:text-xs" style={{ color: 'var(--text-heading)' }}>{segment.difficulty || 'TBA'}</span>
+                          </div>
+                          <div>
+                            <span className="block text-[9px] md:text-[10px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Team Size</span>
+                            <span className="font-medium text-[10px] md:text-xs truncate block" style={{ color: 'var(--text-heading)' }}>{segment.teamSize || 'TBA'}</span>
+                          </div>
+                          <div>
+                            <span className="block text-[9px] md:text-[10px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Reg Fee</span>
+                            <span className="font-medium text-[10px] md:text-xs truncate block" style={{ color: 'var(--text-heading)' }}>{segment.fee || 'TBA'}</span>
+                          </div>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="h-px mb-4" style={{ background: 'var(--border)' }} />
+                      <div className="h-px my-2 md:my-3" style={{ background: 'var(--border)' }} />
 
-                    <div className="mb-4 text-left">
-                      <p className="text-xs uppercase tracking-wider mb-2" style={{ color: 'var(--text-body)' }}>Description:</p>
-                      <p className="text-xs leading-relaxed" style={{ color: 'var(--text-body)' }}>{segment.description}</p>
-                    </div>
-
-                    <div className="mb-4 text-left">
-                      <p className="text-xs uppercase tracking-wider mb-1" style={{ color: 'var(--text-body)' }}>Rules & Requirements:</p>
-                      <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>{segment.rules || 'No rules specified'}</p>
-                    </div>
-
-                    <div className="space-y-2 mt-auto" onClick={(e) => e.stopPropagation()}>
-                      <Link
-                        to={`/event/${segment.id}`}
-                        className="w-full py-2 rounded-full text-sm font-semibold transition-colors text-center block"
-                        style={{
-                          background: 'var(--border)',
-                          color: 'var(--text-body)',
-                          border: '1px solid var(--glass-panel-border)',
-                        }}
-                      >
-                        View Details
-                      </Link>
-                      {registeredSegmentIds.includes(segment.id) ? (
-                        <button
-                          disabled
-                          className="w-full py-2 rounded-full text-sm font-semibold cursor-not-allowed opacity-60 text-center block"
+                      {/* Footer Actions */}
+                      <div className="space-y-1.5 md:space-y-2 mt-auto" onClick={(e) => e.stopPropagation()}>
+                        <Link
+                          to={`/event/${segment.id}`}
+                          className="w-full py-1.5 md:py-2 rounded-full text-xs font-semibold transition-colors text-center block"
                           style={{
                             background: 'var(--border)',
-                            color: 'var(--text-muted)',
+                            color: 'var(--text-body)',
                             border: '1px solid var(--glass-panel-border)',
                           }}
                         >
-                          Already Registered
-                        </button>
-                      ) : (
-                        <Link
-                          to="/register"
-                          className="w-full py-2 rounded-full text-white text-sm font-semibold transition-all hover:brightness-110 text-center block bg-[#3a5a40] hover:bg-[#344e41] shadow-md"
-                        >
-                          Register Now
+                          View Details
                         </Link>
-                      )}
+                        {registeredSegmentIds.includes(segment.id) ? (
+                          <button
+                            disabled
+                            className="w-full py-1.5 md:py-2 rounded-full text-xs font-semibold cursor-not-allowed opacity-60 text-center block"
+                            style={{
+                              background: 'var(--border)',
+                              color: 'var(--text-muted)',
+                              border: '1px solid var(--glass-panel-border)',
+                            }}
+                          >
+                            Already Registered
+                          </button>
+                        ) : (
+                          <Link
+                            to="/register"
+                            className="w-full py-1.5 md:py-2 rounded-full text-white text-xs font-semibold transition-all hover:brightness-110 text-center block bg-[#3a5a40] hover:bg-[#344e41] shadow-md"
+                          >
+                            Register Now
+                          </Link>
+                        )}
+                      </div>
                     </div>
                   </motion.div>
-                </div>
+                </motion.div>
               </motion.div>
             );
           })}
